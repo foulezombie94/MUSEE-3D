@@ -610,20 +610,146 @@ arcade.bornes.forEach((b) => {
   };
 });
 
-/** Position de la caméra pour que l'écran de la borne remplisse la vue */
+/**
+ * Position de la caméra devant la borne : on fait face à l'écran incliné,
+ * le regard un peu plus bas pour voir aussi le joystick et les boutons.
+ */
 function poseJeu(b) {
-  const t = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2),
-    aspect = innerWidth / innerHeight;
-  const remplissageH = mobile ? 0.56 : 0.74,
-    remplissageL = mobile ? 0.94 : 0.86;
-  const d = Math.max(0.6 / (2 * t * remplissageH), 0.8 / (2 * t * aspect * remplissageL));
-  return {
-    vue: b.centreEcran.clone().addScaledVector(b.normale, d),
-    approche: b.emplacement.vue,
-    lacet: b.lacet,
-    tangage: -0.08,
-  };
+  // Comme un joueur debout : yeux à 1,62 m, à une cinquantaine de centimètres du pupitre.
+  // Sur un écran étroit, on recule un peu pour que l'écran de la borne tienne en largeur.
+  const aspect = innerWidth / innerHeight;
+  const recul = 0.95 + Math.max(0, 1.1 - aspect) * 0.55;
+  const vue = new THREE.Vector3(b.position.x, 1.62, b.position.z + recul);
+  // On vise entre l'écran et le pupitre pour voir les deux
+  const cible = b.centreEcran.clone().lerp(b.pupitre, mobile ? 0.15 : 0.38);
+  const tangage = Math.atan2(cible.y - vue.y, Math.hypot(cible.x - vue.x, cible.z - vue.z));
+  return { vue, approche: b.emplacement.vue, lacet: b.lacet, tangage };
 }
+
+/* ---------- Joystick et boutons de la borne, à la souris ou au doigt ----------
+   - Survol : la main s'ouvre sur le joystick, le doigt pointe sur un bouton.
+   - Joystick : on attrape la boule et on la tire ; le manche suit le geste
+     en continu, et la direction (8 positions, comme une vraie grille) se
+     déclenche dès qu'on sort de la petite zone morte du centre.
+   - Boutons : ils restent enfoncés tant qu'on appuie. */
+const JOY_PLEIN = 48; // pixels de glissement pour pencher le manche jusqu'en butée
+const JOY_MORT = 13; // zone morte au centre, en pixels
+const SECTEURS = [
+  ["ArrowRight"],
+  ["ArrowRight", "ArrowUp"],
+  ["ArrowUp"],
+  ["ArrowUp", "ArrowLeft"],
+  ["ArrowLeft"],
+  ["ArrowLeft", "ArrowDown"],
+  ["ArrowDown"],
+  ["ArrowDown", "ArrowRight"],
+];
+const commande3D = { bouton: null, joystick: null, directions: new Set(), id: null };
+function relacherCommande3D() {
+  const b = partie.borne;
+  if (b && commande3D.bouton) {
+    commande3D.bouton.clic = false;
+    b.jeu.relacher(commande3D.bouton.code);
+  }
+  if (b) {
+    commande3D.directions.forEach((code) => b.jeu.relacher(code));
+    b.joyManuel = null;
+  }
+  if (commande3D.id !== null) {
+    try {
+      canvas.releasePointerCapture(commande3D.id);
+    } catch (erreur) {
+      /* sans importance */
+    }
+  }
+  commande3D.bouton = commande3D.joystick = commande3D.id = null;
+  commande3D.directions.clear();
+  canvas.style.cursor = "";
+}
+/** Commande de la borne sous le pointeur : { bouton } ou { joystick: true }, ou null */
+function commandeVisee(e) {
+  const b = partie.borne;
+  if (!ui.partie || !b || partie.pleinEcran || controles.enVol()) return null;
+  lancerRayon(e.clientX, e.clientY);
+  const touche = rayon.intersectObjects(b.zonesCommandes, false)[0];
+  if (!touche) return null;
+  const { bouton, joystick } = touche.object.userData;
+  return bouton ? { bouton } : joystick ? { joystick: true } : null;
+}
+function changerDirections(b, voulues) {
+  commande3D.directions.forEach((code) => {
+    if (!voulues.includes(code)) {
+      b.jeu.relacher(code);
+      commande3D.directions.delete(code);
+    }
+  });
+  voulues.forEach((code) => {
+    if (!commande3D.directions.has(code)) {
+      b.jeu.appuyer(code);
+      commande3D.directions.add(code);
+    }
+  });
+}
+canvas.addEventListener("pointerdown", (e) => {
+  if (e.button > 0) return;
+  const visee = commandeVisee(e);
+  if (!visee) return;
+  const b = partie.borne;
+  commande3D.id = e.pointerId;
+  try {
+    canvas.setPointerCapture(e.pointerId);
+  } catch (erreur) {
+    /* sans importance */
+  }
+  if (visee.bouton) {
+    commande3D.bouton = visee.bouton;
+    visee.bouton.clic = true;
+    b.jeu.appuyer(visee.bouton.code);
+    canvas.style.cursor = "pointer";
+  } else {
+    commande3D.joystick = { x: e.clientX, y: e.clientY };
+    b.joyManuel = { ax: 0, az: 0 };
+    canvas.style.cursor = "grabbing";
+  }
+});
+canvas.addEventListener("pointermove", (e) => {
+  const b = partie.borne;
+  if (!b) return;
+  if (!commande3D.joystick) {
+    // Survol : on montre ce qui se manipule
+    if (!commande3D.bouton && e.pointerType === "mouse") {
+      const visee = commandeVisee(e);
+      canvas.style.cursor = !visee ? "" : visee.joystick ? "grab" : "pointer";
+    }
+    return;
+  }
+  const j = commande3D.joystick;
+  let dx = e.clientX - j.x,
+    dy = e.clientY - j.y;
+  // Si on tire bien au-delà de la butée, le point de départ suit : revenir en arrière est immédiat
+  const longueur = Math.hypot(dx, dy),
+    limite = JOY_PLEIN * 1.4;
+  if (longueur > limite) {
+    j.x += (dx * (longueur - limite)) / longueur;
+    j.y += (dy * (longueur - limite)) / longueur;
+    dx = e.clientX - j.x;
+    dy = e.clientY - j.y;
+  }
+  // Le manche suit le geste en continu…
+  const borne = (v) => THREE.MathUtils.clamp(v / JOY_PLEIN, -1, 1);
+  b.joyManuel = { ax: -borne(dx) * 0.33, az: borne(dy) * 0.33 };
+  // … et la direction se déclenche hors de la zone morte, sur 8 positions
+  if (Math.hypot(dx, dy) < JOY_MORT) changerDirections(b, []);
+  else {
+    const secteur = (Math.round(Math.atan2(-dy, dx) / (Math.PI / 4)) + 8) % 8;
+    changerDirections(b, SECTEURS[secteur]);
+  }
+});
+["pointerup", "pointercancel", "lostpointercapture"].forEach((type) =>
+  canvas.addEventListener(type, (e) => {
+    if (commande3D.id !== null && e.pointerId === commande3D.id) relacherCommande3D();
+  }),
+);
 /** Sur téléphone, l'écran du jeu est remonté pour laisser la place à la manette */
 function cadrer() {
   if (ui.partie && mobile && !partie.pleinEcran)
@@ -685,6 +811,7 @@ function jouer(id) {
 function quitterPartie(revenir = true) {
   if (!ui.partie) return;
   const b = partie.borne;
+  relacherCommande3D();
   if (partie.pleinEcran) basculerPleinEcran();
   if (partie.debrancher) partie.debrancher();
   partie.debrancher = null;
@@ -972,7 +1099,7 @@ function boucle(maintenant = performance.now()) {
   }
 
   // Halo plus discret pendant une partie, pour que l'écran reste net
-  if (halo) halo.strength += ((ui.partie ? 0.1 : 0.35) - halo.strength) * Math.min(1, dt * 4);
+  if (halo) halo.strength += ((ui.partie ? 0.04 : 0.35) - halo.strength) * Math.min(1, dt * 4);
 
   animerBatiment(dt);
   arcade.animer(dt, joueur.pos, partie.borne);
