@@ -85,18 +85,17 @@ export function installerExpositions(scene, renderer) {
       ecran.position.set(0, Y, expo.id === "minecraft" ? 0.105 : 0.083);
       ecran.userData = { type: "expo", index: EXPOSITIONS.indexOf(expo) };
       cibles.push(ecran);
-      // Image fournie dans assets/tableaux : elle remplace l'illustration
-      if (expo.id !== "minecraft")
-        chargerImage(expo.id).then((img) => {
-          if (!img) return;
-          const t = new THREE.CanvasTexture(composerTableau(img));
-          t.colorSpace = THREE.SRGBColorSpace;
-          t.anisotropy = renderer.capabilities.getMaxAnisotropy();
-          ecran.material.map = t;
-          ecran.material.color.set(0xe6e6e6);
-          ecran.material.needsUpdate = true;
-          texture.dispose();
-        });
+      // Visuel authentique stocké localement ; le dessin reste le repli si absent.
+      chargerImage(expo.id).then((img) => {
+        if (!img) return;
+        const t = new THREE.CanvasTexture(composerTableau(img));
+        t.colorSpace = THREE.SRGBColorSpace;
+        t.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+        ecran.material.map = t;
+        ecran.material.color.set(0xe6e6e6);
+        ecran.material.needsUpdate = true;
+        texture.dispose();
+      });
 
       // Lampe de tableau au-dessus du cadre
       const bras = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, 0.32), matLampe);
