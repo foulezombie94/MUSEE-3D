@@ -19,9 +19,7 @@ let liste = null;
 const lireListe = () =>
   (liste ??= fetch(DOSSIER + "liste.json", { cache: "no-store" })
     .then((r) => (r.ok ? r.json() : null))
-    .then((noms) =>
-      Array.isArray(noms) ? new Set(noms.map((n) => String(n).toLowerCase())) : null,
-    )
+    .then((noms) => (Array.isArray(noms) ? new Set(noms.map((n) => String(n).toLowerCase())) : null))
     .catch(() => null));
 
 /** Cherche l'image d'une exposition ; renvoie l'image chargée, ou null */
@@ -59,7 +57,7 @@ export function chargerImage(id) {
  * l'image entière au centre, sur un fond flou tiré de l'image elle-même
  * (comme une affiche encadrée, sans rien couper).
  */
-export function composerTableau(img, largeur = 960, hauteur = 600) {
+export function composerTableau(img, largeur = 1200, hauteur = 750) {
   const c = document.createElement("canvas");
   c.width = largeur;
   c.height = hauteur;
@@ -77,9 +75,8 @@ export function composerTableau(img, largeur = 960, hauteur = 600) {
   );
   g.filter = "none";
   const contient = Math.min(largeur / img.width, hauteur / img.height);
-  // Conserver les détails des affiches et photographies lors de leur mise au cadre.
-  g.imageSmoothingEnabled = true;
-  g.imageSmoothingQuality = "high";
+  // Les petites captures d'écran rétro restent nettes, sans flou d'agrandissement
+  g.imageSmoothingEnabled = img.width >= 480;
   g.drawImage(
     img,
     (largeur - img.width * contient) / 2,

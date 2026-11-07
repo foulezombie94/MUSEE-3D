@@ -64,8 +64,6 @@ L’application est statique et peut être hébergée à la racine d’un site o
 
 ## Crédits et précisions
 
-Les 22 tableaux utilisent des captures, affiches et photographies authentiques conservées dans `assets/tableaux/`. Les sources, crédits et notices sont détaillés dans [assets/tableaux/SOURCES.md](assets/tableaux/SOURCES.md) et `sources.json`. Les illustrations des éditeurs sont distinguées des photographies documentaires.
-
 - Three.js : auteurs de Three.js, licence MIT, voir `js/lib/LICENCE-three.txt`.
 - Ressources Minecraft : Mojang / Microsoft, voir `assets/minecraft/CREDITS.txt`.
 - Polices : voir les crédits des ressources et les notices Google Fonts.

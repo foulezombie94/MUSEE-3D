@@ -284,8 +284,7 @@ function ouvrirFiche(i) {
   controles.liberer();
   majControles();
   $("fiche-img").src = imagesTrouvees.get(e.id) || urlIllustration(e.id, 8);
-  $("fiche-img").alt =
-    `${imagesTrouvees.has(e.id) ? "Visuel authentique" : "Illustration"} : ${e.titre}`;
+  $("fiche-img").alt = `Illustration en pixel art : ${e.titre}`;
   $("fiche-ecran").style.setProperty("--teinte", salle.couleur);
   $("fiche-salle").textContent = `Salle ${salle.numero} · ${salle.nom}`;
   $("fiche-salle").style.color = salle.couleur;
