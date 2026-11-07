@@ -1,6 +1,39 @@
 import { retroInfo } from "./catalog.js";
 import { JeuArcade } from "../jeux/base.js";
+import {
+  consoleDuJeu,
+  habillage,
+  dessinerDemarrage,
+  SONS_DEMARRAGE,
+  tailleEcran,
+} from "./consoles.js";
 let current = null;
+
+/** Joue une petite suite de notes : [fréquence, début, durée, forme, volume] */
+function jouerNotes(notes) {
+  if (JeuArcade.muet || !notes) return;
+  try {
+    const ac = new (window.AudioContext || window.webkitAudioContext)();
+    const t0 = ac.currentTime + 0.05;
+    let fin = 0;
+    notes.forEach(([f, debut, duree, forme = "square", volume = 0.06]) => {
+      const o = ac.createOscillator(),
+        gain = ac.createGain();
+      o.type = forme;
+      o.frequency.value = f;
+      gain.gain.setValueAtTime(0, t0 + debut);
+      gain.gain.linearRampToValueAtTime(volume, t0 + debut + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + debut + duree);
+      o.connect(gain).connect(ac.destination);
+      o.start(t0 + debut);
+      o.stop(t0 + debut + duree + 0.05);
+      fin = Math.max(fin, debut + duree);
+    });
+    setTimeout(() => ac.close(), (fin + 1) * 1000);
+  } catch (e) {
+    /* pas de son disponible */
+  }
+}
 export async function ouvrirRetro(id, { onClose = () => {} } = {}) {
   if (current) current();
   const info = retroInfo(id);
@@ -42,6 +75,24 @@ export async function ouvrirRetro(id, { onClose = () => {} } = {}) {
     .join(
       "",
     )}</div><p class="retro-notice">Reconstitution courte du musée · P : pause · Échap : retour au musée</p></footer>`;
+  // Jeu d'une console exposée : télé de l'époque autour de l'écran et vraie manette
+  const cons = consoleDuJeu(id);
+  if (cons) {
+    root.classList.add("console-theme", "console-" + cons.id);
+    root.querySelector(".retro-stage").innerHTML = habillage(cons);
+    root.querySelector("h2").innerHTML = `${cons.nom}<small>${cons.annee} · ${info.title} · Reconstitution jouable</small>`;
+  }
+  const marquer = (code, oui) =>
+    root
+      .querySelectorAll(`[data-retro-key="${code}"]`)
+      .forEach((b) => b.classList.toggle("appuye", oui));
+  const demarrage = { actif: false, t: 0, g: null, canvas: null };
+  function finirDemarrage() {
+    if (!demarrage.actif) return;
+    demarrage.actif = false;
+    demarrage.canvas.classList.add("fini");
+    setTimeout(() => demarrage.canvas.remove(), 500);
+  }
   document.body.append(root);
   document.body.style.overflow = "hidden";
   const listen = (node, type, fn, opts = {}) =>
@@ -94,6 +145,12 @@ export async function ouvrirRetro(id, { onClose = () => {} } = {}) {
       if (!controls.has(e.code)) return;
       e.preventDefault();
       e.stopImmediatePropagation();
+      if (demarrage.actif) {
+        // Une touche pendant le démarrage le passe, sans agir sur le jeu
+        if (!e.repeat) finirDemarrage();
+        return;
+      }
+      marquer(e.code, true);
       if (!e.repeat) game?.appuyer(e.code);
     },
     { capture: true },
@@ -105,6 +162,7 @@ export async function ouvrirRetro(id, { onClose = () => {} } = {}) {
       if (controls.has(e.code)) {
         e.preventDefault();
         e.stopImmediatePropagation();
+        marquer(e.code, false);
         game?.relacher(e.code);
       }
     },
@@ -134,10 +192,18 @@ export async function ouvrirRetro(id, { onClose = () => {} } = {}) {
     listen(button, "pointerdown", (e) => {
       e.preventDefault();
       button.setPointerCapture?.(e.pointerId);
+      if (demarrage.actif) {
+        finirDemarrage();
+        return;
+      }
+      button.classList.add("appuye");
       game?.appuyer(button.dataset.retroKey);
     });
     for (const event of ["pointerup", "pointercancel", "lostpointercapture"])
-      listen(button, event, () => game?.relacher(button.dataset.retroKey));
+      listen(button, event, () => {
+        button.classList.remove("appuye");
+        game?.relacher(button.dataset.retroKey);
+      });
   }
   try {
     const module = await import(`./${info.module}.js`);
@@ -145,13 +211,34 @@ export async function ouvrirRetro(id, { onClose = () => {} } = {}) {
     const canvas = document.createElement("canvas");
     canvas.tabIndex = 0;
     canvas.setAttribute("aria-label", `Écran du jeu ${info.title}`);
-    root.querySelector(".retro-stage").replaceChildren(canvas);
+    const image = root.querySelector(".console-image");
+    (image || root.querySelector(".retro-stage")).replaceChildren(canvas);
     game = new module[info.engine](canvas, {
       id,
       title: info.title,
       nom: "retro-" + id,
       titre: info.title,
     });
+    if (cons) {
+      // Allumage : la télé s'allume, puis la console démarre
+      const [lw, lh] = tailleEcran(cons.id);
+      demarrage.canvas = document.createElement("canvas");
+      demarrage.canvas.className = "console-boot";
+      demarrage.canvas.width = lw * 2;
+      demarrage.canvas.height = lh * 2;
+      demarrage.g = demarrage.canvas.getContext("2d");
+      demarrage.g.scale(2, 2);
+      demarrage.actif = true;
+      demarrage.t = 0;
+      image.append(demarrage.canvas);
+      image.classList.add("allumage");
+      listen(demarrage.canvas, "pointerdown", (e) => {
+        e.preventDefault();
+        finirDemarrage();
+      });
+      dessinerDemarrage(cons.id, demarrage.g, lw, lh, 0);
+      jouerNotes(SONS_DEMARRAGE[cons.id]);
+    }
     const point = (e) => {
       const r = canvas.getBoundingClientRect();
       return {
@@ -196,6 +283,12 @@ export async function ouvrirRetro(id, { onClose = () => {} } = {}) {
       const elapsed = (now - last) / 1000;
       if (!document.hidden && elapsed >= 1 / 60 - 0.001) {
         last = now;
+        if (demarrage.actif) {
+          demarrage.t += Math.min(0.05, elapsed);
+          const [lw, lh] = tailleEcran(cons.id);
+          dessinerDemarrage(cons.id, demarrage.g, lw, lh, demarrage.t);
+          if (demarrage.t >= cons.duree) finirDemarrage();
+        }
         game.etape(Math.min(0.05, elapsed));
       } else if (document.hidden) last = now;
       frame = requestAnimationFrame(loop);

@@ -10,6 +10,7 @@ import { SALLES, EXPOSITIONS, BORNES } from "../expositions.js";
 import { dessinerIllustration } from "../illustrations.js";
 import { creerJeu } from "../jeux/index.js";
 import { textureCanvas, neon, textureHalo } from "./batiment.js";
+import { chargerImage, composerTableau } from "./images-officielles.js";
 
 /* ---------- Expositions murales ----------
    Comme dans un vrai musée : un écran encadré de noir avec un
@@ -84,6 +85,18 @@ export function installerExpositions(scene, renderer) {
       ecran.position.set(0, Y, expo.id === "minecraft" ? 0.105 : 0.083);
       ecran.userData = { type: "expo", index: EXPOSITIONS.indexOf(expo) };
       cibles.push(ecran);
+      // Image fournie dans assets/tableaux : elle remplace l'illustration
+      if (expo.id !== "minecraft")
+        chargerImage(expo.id).then((img) => {
+          if (!img) return;
+          const t = new THREE.CanvasTexture(composerTableau(img));
+          t.colorSpace = THREE.SRGBColorSpace;
+          t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+          ecran.material.map = t;
+          ecran.material.color.set(0xe6e6e6);
+          ecran.material.needsUpdate = true;
+          texture.dispose();
+        });
 
       // Lampe de tableau au-dessus du cadre
       const bras = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, 0.32), matLampe);

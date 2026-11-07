@@ -18,7 +18,7 @@ Write-Host "MUSEE CONTINUE - MINECRAFT" -ForegroundColor Green
 Write-Host "Ouvrir : $museumUrl"
 Write-Host "Laissez cette fenetre ouverte. Fermez-la pour arreter le serveur."
 Start-Process $museumUrl
-$museumMime = @{'.html'='text/html; charset=utf-8';'.js'='text/javascript; charset=utf-8';'.css'='text/css; charset=utf-8';'.json'='application/json';'.png'='image/png';'.svg'='image/svg+xml';'.woff2'='font/woff2';'.txt'='text/plain; charset=utf-8';'.ico'='image/x-icon'}
+$museumMime = @{'.html'='text/html; charset=utf-8';'.js'='text/javascript; charset=utf-8';'.css'='text/css; charset=utf-8';'.json'='application/json';'.png'='image/png';'.jpg'='image/jpeg';'.jpeg'='image/jpeg';'.webp'='image/webp';'.gif'='image/gif';'.svg'='image/svg+xml';'.woff2'='font/woff2';'.txt'='text/plain; charset=utf-8';'.ico'='image/x-icon'}
 try {
     while ($true) {
         $museumClient = $museumListener.AcceptTcpClient()
@@ -35,7 +35,12 @@ try {
             $museumStatus = '200 OK'
             $museumType = $museumMime[[IO.Path]::GetExtension($museumFile).ToLowerInvariant()]
             if (-not $museumType) { $museumType = 'application/octet-stream' }
-            if (-not $museumFile.StartsWith($museumRoot + [IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)) {
+            if ($museumPath -eq '/assets/tableaux/liste.json') {
+                # Liste des images deposees pour les tableaux du musee
+                $museumNoms = @(Get-ChildItem -LiteralPath (Join-Path $museumRoot 'assets\tableaux') -File -ErrorAction SilentlyContinue | Where-Object { $_.Extension -match '^\.(jpe?g|png|webp)$' } | ForEach-Object { '"' + $_.Name.Replace('"','').Replace('\','') + '"' })
+                $museumType = 'application/json'
+                $museumData = [Text.Encoding]::UTF8.GetBytes('[' + ($museumNoms -join ',') + ']')
+            } elseif (-not $museumFile.StartsWith($museumRoot + [IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)) {
                 $museumStatus = '403 Forbidden'; $museumData = [Text.Encoding]::UTF8.GetBytes('Forbidden')
             } elseif (-not [IO.File]::Exists($museumFile)) {
                 $museumStatus = '404 Not Found'; $museumData = [Text.Encoding]::UTF8.GetBytes('Not found')

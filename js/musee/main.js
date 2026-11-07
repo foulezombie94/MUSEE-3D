@@ -25,6 +25,9 @@ import { JeuArcade, brancherCommandes, versCanvas, LARGEUR, HAUTEUR } from "../j
 import { PLAN, salleEn, debutSalle } from "./plan.js";
 import { construireBatiment } from "./batiment.js";
 import { installerExpositions, installerBornes } from "./vitrines.js";
+import { installerConsoles } from "./consoles.js";
+import { imagesTrouvees } from "./images-officielles.js";
+import { infoConsole } from "../retro/consoles.js";
 import { creerControles } from "./controles.js";
 import { ouvrirMinecraft } from "../minecraft/game.js";
 import { GRAPHICS, readGraphics, renderRatio } from "../minecraft/graphics.js";
@@ -93,7 +96,9 @@ etapeChargement("Accrochage des expositions…", 65);
 const expositions = installerExpositions(scene, renderer);
 etapeChargement("Branchement des bornes…", 85);
 const arcade = installerBornes(scene, renderer);
-const cibles = [...expositions.cibles, ...arcade.cibles];
+etapeChargement("Installation des consoles…", 93);
+const consoles = installerConsoles(scene, renderer, expositions.emplacements);
+const cibles = [...expositions.cibles, ...arcade.cibles, ...consoles.cibles];
 etapeChargement("Prêt à jouer.", 100);
 ["entrer", "entrer-visite", "entrer-jeux"].forEach((id) => {
   $(id).disabled = false;
@@ -145,7 +150,8 @@ function viser(x, y) {
 }
 function activer(cible) {
   if (!cible) return;
-  if (cible.type === "expo" && EXPOSITIONS[cible.index].id === "minecraft") jouerMinecraft();
+  if (cible.type === "console") jouerConsole(cible.id);
+  else if (cible.type === "expo" && EXPOSITIONS[cible.index].id === "minecraft") jouerMinecraft();
   else if (cible.type === "expo" && EXPOSITIONS[cible.index].retro)
     jouerReconstitution(EXPOSITIONS[cible.index].retro);
   else if (cible.type === "expo") ouvrirFiche(cible.index);
@@ -216,6 +222,7 @@ $("entrer-jeux").addEventListener("click", () => {
 });
 
 function nomCible(c) {
+  if (c.type === "console") return `${infoConsole(c.id).nom} (${infoConsole(c.id).annee})`;
   return c.type === "expo" ? EXPOSITIONS[c.index].titre : infosBorne(c.id).nom;
 }
 function majIndice() {
@@ -234,6 +241,7 @@ function majIndice() {
         : "Cliquez sur l'écran";
     const jouable =
       ui.vise.type === "borne" ||
+      ui.vise.type === "console" ||
       (ui.vise.type === "expo" &&
         (EXPOSITIONS[ui.vise.index].id === "minecraft" || EXPOSITIONS[ui.vise.index].retro));
     el.innerHTML = jouable
@@ -275,7 +283,7 @@ function ouvrirFiche(i) {
   ui.fiche = true;
   controles.liberer();
   majControles();
-  $("fiche-img").src = urlIllustration(e.id, 8);
+  $("fiche-img").src = imagesTrouvees.get(e.id) || urlIllustration(e.id, 8);
   $("fiche-img").alt = `Illustration en pixel art : ${e.titre}`;
   $("fiche-ecran").style.setProperty("--teinte", salle.couleur);
   $("fiche-salle").textContent = `Salle ${salle.numero} · ${salle.nom}`;
@@ -334,7 +342,32 @@ $("fiche-jouer").addEventListener("click", () => {
       : jouer(id);
 });
 
-async function jouerReconstitution(id) {
+/* --- Consoles du centre des salles 3 et 4 ---
+   La caméra s'approche de la télé, puis la console s'allume. */
+let consoleEnApproche = null;
+function jouerConsole(id) {
+  const poste = consoles.postes.find((p) => p.info.id === id);
+  if (!poste || !ui.entre || ui.retro) return;
+  arreterVisite();
+  fermerPanneau();
+  fermerFiche();
+  fermerAide();
+  if (ui.partie) quitterPartie(false);
+  controles.liberer();
+  controles.volerVers(poste.jeu);
+  consoleEnApproche = { poste, depuis: performance.now() };
+  majIndice();
+}
+/** Appelé à chaque image : lance le jeu une fois la caméra arrivée devant la télé */
+function suivreApproche() {
+  if (!consoleEnApproche) return;
+  const { poste, depuis } = consoleEnApproche;
+  if (controles.enVol() && performance.now() - depuis < 6000) return;
+  consoleEnApproche = null;
+  jouerReconstitution(poste.info.jeu, poste);
+}
+
+async function jouerReconstitution(id, poste = null) {
   if (!ui.entre || ui.retro) return;
   arreterVisite();
   fermerPanneau();
@@ -351,6 +384,8 @@ async function jouerReconstitution(id) {
       ui.retro = false;
       ui.vise = null;
       horloge.getDelta();
+      // Devant une console, on se relève et on recule d'un pas
+      if (poste) controles.volerVers(poste.emplacement, true);
       majControles();
       majIndice();
     },
@@ -845,6 +880,10 @@ function dessinerPlan() {
     plan.fillStyle = b.infos.couleur;
     plan.fillRect(planU(b.position.z) - 5, planV(b.position.x) - 5, 10, 10);
   });
+  consoles.postes.forEach((p) => {
+    plan.fillStyle = SALLES[salleEn(p.position.z)].couleur;
+    plan.fillRect(planU(p.position.z) - 4, planV(p.position.x) - 4, 8, 8);
+  });
   const angle = Math.atan2(-Math.sin(joueur.lacet), Math.cos(joueur.lacet));
   plan.save();
   plan.translate(planU(joueur.pos.z), planV(joueur.pos.x));
@@ -904,6 +943,7 @@ function boucle(maintenant = performance.now()) {
     joueur.tangage = -0.02;
   } else {
     controles.mettreAJour(dt);
+    suivreApproche();
   }
 
   if (ui.visite && !controles.enVol() && !ui.fiche) {
@@ -936,6 +976,7 @@ function boucle(maintenant = performance.now()) {
 
   animerBatiment(dt);
   arcade.animer(dt, joueur.pos, partie.borne);
+  consoles.animer(dt, joueur.pos);
   if (!partie.pleinEcran) {
     if (composer) composer.render();
     else renderer.render(scene, camera);

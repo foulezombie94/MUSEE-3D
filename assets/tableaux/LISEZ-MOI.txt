@@ -1,0 +1,44 @@
+IMAGES DES TABLEAUX DU MUSÉE
+============================
+
+Déposez ici une image pour remplacer l'illustration en pixel art
+d'un tableau. Le nom du fichier doit être l'identifiant ci-dessous,
+en .jpg, .png ou .webp. Exemple : pacman.jpg
+
+L'image s'affiche en entier, centrée dans le cadre, sur un fond flou
+tiré de l'image (rien n'est coupé). Elle remplace aussi l'image de la
+fiche. Rechargez la page du musée après avoir ajouté un fichier.
+Supprimez le fichier pour revenir au pixel art.
+
+Utilisez des images que vous avez le droit d'utiliser (vos propres
+captures d'écran, des visuels de presse dont la licence le permet…).
+
+Salle 1 · Les pionniers
+  tennis        Tennis for Two
+  spacewar      Spacewar!
+  odyssey       Magnavox Odyssey
+  pong          Pong
+  vcs           Atari 2600
+
+Salle 2 · L'âge d'or de l'arcade
+  invaders      Space Invaders
+  pacman        Pac-Man
+  donkeykong    Donkey Kong
+  dragonslair   Dragon's Lair
+  krach         Le krach de 1983
+
+Salle 3 · Les consoles 8 et 16 bits
+  nes           Famicom / NES
+  tetris        Tetris
+  smb           Super Mario Bros.
+  arkanoid      Arkanoid
+  gameboy       Game Boy
+  megadrive     Mega Drive et Sonic
+
+Salle 4 · La 3D et le jeu en ligne
+  alone         Alone in the Dark
+  playstation   PlayStation
+  mario64       Super Mario 64
+  bejeweled     Bejeweled 2
+  wii           Wii
+  (Minecraft garde son tableau jouable.)
