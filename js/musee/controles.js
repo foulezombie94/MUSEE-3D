@@ -6,47 +6,146 @@
    - Vol automatique de la caméra jusqu'à une œuvre
    ============================================================ */
 import * as THREE from "three";
-import { PLAN, bloque, salleEn, debutSalle, OBSTACLES } from "./plan.js";
+import { PLAN, bloque, OBSTACLES } from "./plan.js";
 
-/** Distance entre le point p et le segment [a, b], dans le plan du sol */
-function distanceSegment(p, a, b) {
-  const abx = b.x - a.x,
-    abz = b.z - a.z;
-  const t = Math.max(
-    0,
-    Math.min(1, ((p.x - a.x) * abx + (p.z - a.z) * abz) / (abx * abx + abz * abz || 1)),
-  );
-  return Math.hypot(a.x + abx * t - p.x, a.z + abz * t - p.z);
+/* ---------- Recherche de chemin (A*) sur une grille du musée ----------
+   Le sol est découpé en cases de 25 cm. Une case est libre si un visiteur
+   peut s'y tenir (murs, cloisons, socles, bornes, consoles exclus).
+   Le chemin trouvé est ensuite raccourci : on garde seulement les points
+   où il faut vraiment tourner, ce qui évite les zigzags. */
+const PAS = 0.25;
+const NX = Math.round(PLAN.LARGEUR / PAS) + 1;
+const NZ = Math.round((PLAN.Z_ENTREE - PLAN.Z_FOND) / PAS) + 1;
+let grille = null,
+  obstaclesConnus = -1;
+function grilleLibre() {
+  // Recalculée seulement si des obstacles ont été ajoutés
+  if (grille && obstaclesConnus === OBSTACLES.length) return grille;
+  grille = new Uint8Array(NX * NZ);
+  for (let j = 0; j < NZ; j++)
+    for (let i = 0; i < NX; i++)
+      grille[j * NX + i] = bloque(i * PAS - PLAN.DEMI_L, PLAN.Z_ENTREE - j * PAS) ? 0 : 1;
+  obstaclesConnus = OBSTACLES.length;
+  return grille;
+}
+const versCase = (x, z) => [
+  THREE.MathUtils.clamp(Math.round((x + PLAN.DEMI_L) / PAS), 0, NX - 1),
+  THREE.MathUtils.clamp(Math.round((PLAN.Z_ENTREE - z) / PAS), 0, NZ - 1),
+];
+const versPoint = (i, j) => new THREE.Vector3(i * PAS - PLAN.DEMI_L, PLAN.YEUX, PLAN.Z_ENTREE - j * PAS);
+const estLibre = (g, i, j) => i >= 0 && j >= 0 && i < NX && j < NZ && g[j * NX + i] === 1;
+
+/** Case libre la plus proche (le point de vue final peut être tout contre un objet) */
+function caseLibreProche(g, i0, j0) {
+  if (estLibre(g, i0, j0)) return [i0, j0];
+  for (let r = 1; r < 24; r++)
+    for (let dj = -r; dj <= r; dj++)
+      for (let di = -r; di <= r; di++) {
+        if (Math.max(Math.abs(di), Math.abs(dj)) !== r) continue;
+        if (estLibre(g, i0 + di, j0 + dj)) return [i0 + di, j0 + dj];
+      }
+  return null;
 }
 
-/**
- * Si le trajet a → b traverse un obstacle (socle, borne), renvoie des points
- * de passage pour le contourner par l'avant ou par l'arrière.
- */
-function contourner(a, b, profondeur = 0) {
-  if (profondeur > 3) return [];
-  const obstacle = OBSTACLES.find(
-    (o) => distanceSegment(o, a, b) < Math.max(o.demiX, o.demiZ) + 0.8,
-  );
-  if (!obstacle) return [];
-  // Trajet surtout dans la longueur : on passe à côté ; sinon on passe devant ou derrière
-  const enLongueur = Math.abs(b.z - a.z) > Math.abs(b.x - a.x);
-  const detour = enLongueur
-    ? new THREE.Vector3(
-        obstacle.x + (Math.sign((a.x + b.x) / 2 - obstacle.x) || 1) * (obstacle.demiX + 1.7),
-        PLAN.YEUX,
-        obstacle.z,
-      )
-    : new THREE.Vector3(
-        obstacle.x,
-        PLAN.YEUX,
-        obstacle.z + (Math.sign((a.z + b.z) / 2 - obstacle.z) || 1) * (obstacle.demiZ + 1.7),
-      );
-  return [
-    ...contourner(a, detour, profondeur + 1),
-    detour,
-    ...contourner(detour, b, profondeur + 1),
-  ];
+/** Vrai si on peut aller en ligne droite de a à b sans toucher d'obstacle */
+function voitDirectement(g, a, b) {
+  const n = Math.ceil(a.distanceTo(b) / (PAS * 0.4));
+  for (let k = 1; k < n; k++) {
+    const [i, j] = versCase(a.x + ((b.x - a.x) * k) / n, a.z + ((b.z - a.z) * k) / n);
+    if (!estLibre(g, i, j)) return false;
+  }
+  return true;
+}
+
+/** Plus court chemin de a à b, sous forme de quelques points de passage */
+function chercherChemin(a, b) {
+  const g = grilleLibre();
+  if (voitDirectement(g, a, b)) return [];
+  const depart = caseLibreProche(g, ...versCase(a.x, a.z));
+  const but = caseLibreProche(g, ...versCase(b.x, b.z));
+  if (!depart || !but) return [];
+  const indice = (i, j) => j * NX + i;
+  const cible = indice(...but);
+  const cout = new Float32Array(NX * NZ).fill(Infinity);
+  const parent = new Int32Array(NX * NZ).fill(-1);
+  const ferme = new Uint8Array(NX * NZ);
+  const estime = (i, j) => {
+    const dx = Math.abs(i - but[0]),
+      dz = Math.abs(j - but[1]);
+    return Math.max(dx, dz) + (Math.SQRT2 - 1) * Math.min(dx, dz);
+  };
+  // File de priorité (tas binaire) de [priorité, case]
+  const tas = [];
+  const pousser = (p, c) => {
+    tas.push([p, c]);
+    let k = tas.length - 1;
+    while (k > 0) {
+      const h = (k - 1) >> 1;
+      if (tas[h][0] <= tas[k][0]) break;
+      [tas[h], tas[k]] = [tas[k], tas[h]];
+      k = h;
+    }
+  };
+  const extraire = () => {
+    const haut = tas[0],
+      dernier = tas.pop();
+    if (tas.length) {
+      tas[0] = dernier;
+      let k = 0;
+      for (;;) {
+        const l = 2 * k + 1,
+          r = l + 1;
+        let m = k;
+        if (l < tas.length && tas[l][0] < tas[m][0]) m = l;
+        if (r < tas.length && tas[r][0] < tas[m][0]) m = r;
+        if (m === k) break;
+        [tas[m], tas[k]] = [tas[k], tas[m]];
+        k = m;
+      }
+    }
+    return haut;
+  };
+  const d0 = indice(...depart);
+  cout[d0] = 0;
+  pousser(estime(...depart), d0);
+  while (tas.length) {
+    const [, c] = extraire();
+    if (c === cible) break;
+    if (ferme[c]) continue;
+    ferme[c] = 1;
+    const i = c % NX,
+      j = (c / NX) | 0;
+    for (let dj = -1; dj <= 1; dj++)
+      for (let di = -1; di <= 1; di++) {
+        if (!di && !dj) continue;
+        const ni = i + di,
+          nj = j + dj;
+        if (!estLibre(g, ni, nj)) continue;
+        // En diagonale, on ne coupe pas le coin d'un obstacle
+        if (di && dj && (!estLibre(g, i + di, j) || !estLibre(g, i, j + dj))) continue;
+        const n = indice(ni, nj),
+          nouveau = cout[c] + (di && dj ? Math.SQRT2 : 1);
+        if (nouveau < cout[n]) {
+          cout[n] = nouveau;
+          parent[n] = c;
+          pousser(nouveau + estime(ni, nj), n);
+        }
+      }
+  }
+  if (parent[cible] < 0 && cible !== d0) return [];
+  // On remonte le chemin, puis on ne garde que les points utiles
+  const cases = [];
+  for (let c = cible; c >= 0; c = parent[c]) cases.unshift(versPoint(c % NX, (c / NX) | 0));
+  const points = [a.clone().setY(PLAN.YEUX), ...cases, b.clone().setY(PLAN.YEUX)];
+  const utiles = [];
+  let k = 0;
+  while (k < points.length - 1) {
+    let suivant = points.length - 1;
+    while (suivant > k + 1 && !voitDirectement(g, points[k], points[suivant])) suivant--;
+    if (suivant < points.length - 1) utiles.push(points[suivant]);
+    k = suivant;
+  }
+  return utiles;
 }
 
 /** Plus court écart entre deux angles (pour tourner dans le bon sens) */
@@ -230,52 +329,51 @@ export function creerControles({ canvas, joystick, estTactile, mouvementReduit, 
    * @param direct      vrai : trajet en ligne droite, sans contourner les obstacles
    */
   function volerVers(emplacement, direct = false) {
+    const depart = joueur.pos.clone().setY(PLAN.YEUX);
     const arrivee = (emplacement.approche || emplacement.vue).clone();
-    const chemin = [joueur.pos.clone()];
-    const depart = salleEn(joueur.pos.z),
-      but = salleEn(arrivee.z);
-    if (depart !== but) {
-      const pas = but > depart ? 1 : -1;
-      for (let s = depart; s !== but; s += pas) {
-        const zPorte = debutSalle(pas > 0 ? s + 1 : s);
-        chemin.push(
-          new THREE.Vector3(0, PLAN.YEUX, zPorte + pas * 1.6),
-          new THREE.Vector3(0, PLAN.YEUX, zPorte - pas * 1.6),
-        );
-      }
-    }
-    chemin.push(arrivee);
-    // On ajoute des détours autour des socles et des bornes
-    if (!direct)
-      for (let i = chemin.length - 1; i > 0; i--)
-        chemin.splice(i, 0, ...contourner(chemin[i - 1], chemin[i]));
-    if (emplacement.approche) chemin.push(emplacement.vue.clone());
-    const longueurs = [0];
-    for (let i = 1; i < chemin.length; i++)
-      longueurs.push(longueurs[i - 1] + chemin[i].distanceTo(chemin[i - 1]));
-    const total = longueurs[longueurs.length - 1] || 1;
+    // Le plus court chemin qui évite murs, cloisons et objets, sans zigzag
+    const points = [depart, ...(direct ? [] : chercherChemin(depart, arrivee)), arrivee].filter(
+      (p, i, liste) => i === 0 || p.distanceTo(liste[i - 1]) > 0.05,
+    );
+    if (points.length === 1) points.push(arrivee.clone().add(new THREE.Vector3(0, 0.001, 0)));
+    // Courbe douce qui passe par les points de passage
+    const courbe =
+      points.length > 2
+        ? new THREE.CatmullRomCurve3(points, false, "centripetal", 0.5)
+        : new THREE.LineCurve3(points[0], points[1]);
+    const longueurCourbe = courbe.getLength();
+    // Devant une borne ou une console, on termine en avançant tout droit vers l'écran
+    const finale = emplacement.approche ? emplacement.vue.clone() : null;
+    const longueurFinale = finale ? arrivee.distanceTo(finale) : 0;
+    const total = longueurCourbe + longueurFinale || 0.001;
+    // Ne pas faire de tour complet : on part de l'angle actuel ramené entre -π et π
+    joueur.lacet = Math.atan2(Math.sin(joueur.lacet), Math.cos(joueur.lacet));
 
     etat.vol = {
-      chemin,
-      longueurs,
+      courbe,
+      longueurCourbe,
+      arrivee,
+      finale,
       total,
-      longTrajet: depart !== but,
+      // Sur un long trajet, la caméra regarde où elle va, puis se tourne vers le but
+      suivi: longueurCourbe > 10,
       lacet0: joueur.lacet,
       lacetCible: emplacement.lacet,
       tangage0: joueur.tangage,
       tangage1: emplacement.tangage ?? 0.09,
       t: 0,
-      duree: mouvementReduit ? 0.01 : Math.min(5, (total > 3 ? 1.4 : 0.7) + total / 16),
+      duree: mouvementReduit ? 0.01 : Math.min(5, (total > 3 ? 1.2 : 0.7) + total / 11),
     };
     joueur.vitesse.set(0, 0, 0);
   }
 
-  /** Position sur le chemin pour une distance parcourue d */
+  /** Position sur le trajet pour une distance parcourue d */
   function pointDuChemin(v, d) {
-    let i = 1;
-    while (i < v.longueurs.length - 1 && v.longueurs[i] < d) i++;
-    const segment = v.longueurs[i] - v.longueurs[i - 1] || 1;
-    return v.chemin[i - 1].clone().lerp(v.chemin[i], (d - v.longueurs[i - 1]) / segment);
+    if (v.longueurCourbe < 0.01) {
+      if (!v.finale) return v.arrivee.clone();
+    } else if (d <= v.longueurCourbe || !v.finale)
+      return v.courbe.getPointAt(THREE.MathUtils.clamp(d / (v.longueurCourbe || 1), 0, 1));
+    return v.arrivee.clone().lerp(v.finale, (d - v.longueurCourbe) / (v.total - v.longueurCourbe));
   }
 
   function voler(dt) {
@@ -283,24 +381,28 @@ export function creerControles({ canvas, joystick, estTactile, mouvementReduit, 
     v.t = Math.min(1, v.t + dt / v.duree);
     const k = v.t < 0.5 ? 4 * v.t ** 3 : 1 - (-2 * v.t + 2) ** 3 / 2; // démarrage et arrivée en douceur
     joueur.pos.copy(pointDuChemin(v, k * v.total));
-    joueur.pos.y += Math.sin(k * Math.PI) * (v.total > 3 ? 0.25 : 0);
+    joueur.pos.y += Math.sin(k * Math.PI) * (v.total > 6 ? 0.18 : 0);
 
-    if (v.longTrajet && k < 0.75) {
-      // Long trajet : la caméra regarde dans la direction du déplacement
-      const devant = pointDuChemin(v, Math.min(v.total, k * v.total + 2)).sub(joueur.pos);
-      if (devant.lengthSq() > 0.001)
+    const lisse = (x) => x * x * (3 - 2 * x);
+    if (v.suivi && k < 0.72) {
+      // La caméra regarde un peu plus loin sur le trajet, et tourne en douceur
+      const devant = pointDuChemin(v, Math.min(v.total, k * v.total + 3.5)).sub(joueur.pos);
+      if (devant.lengthSq() > 0.01)
         joueur.lacet +=
-          ecartAngle(joueur.lacet, Math.atan2(-devant.x, -devant.z)) * Math.min(1, dt * 5);
+          ecartAngle(joueur.lacet, Math.atan2(-devant.x, -devant.z)) * Math.min(1, dt * 3.5);
       joueur.tangage += (0 - joueur.tangage) * Math.min(1, dt * 4);
       v.lacet0 = joueur.lacet;
       v.tangage0 = joueur.tangage;
     } else {
-      // Fin du trajet : la caméra se tourne vers l'œuvre
-      const f = v.longTrajet ? (k - 0.75) / 0.25 : k;
+      // Fin du trajet : un seul virage, par le plus court, vers l'œuvre
+      const f = lisse(v.suivi ? Math.min(1, (k - 0.72) / 0.28) : k);
       joueur.lacet = v.lacet0 + ecartAngle(v.lacet0, v.lacetCible) * f;
       joueur.tangage = v.tangage0 + (v.tangage1 - v.tangage0) * f;
     }
-    if (v.t >= 1) etat.vol = null;
+    if (v.t >= 1) {
+      joueur.lacet = Math.atan2(Math.sin(joueur.lacet), Math.cos(joueur.lacet));
+      etat.vol = null;
+    }
   }
 
   /** À appeler à chaque image */
