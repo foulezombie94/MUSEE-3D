@@ -8,9 +8,9 @@
     "source": "https://en.wikipedia.org/wiki/Atari_2600",
     "imageOriginale": "https://upload.wikimedia.org/wikipedia/commons/0/02/Atari-2600-Wood-4Sw-Set.png",
     "pageArchive": "https://commons.wikimedia.org/wiki/File:Atari-2600-Wood-4Sw-Set.png",
-    "largeur": 1,
-    "hauteur": 1,
-    "sha256": "346a7dd042f81308a64de569d8d132017d7618834212f1e8f6f101d69d0f8fd5",
+    "largeur": 960,
+    "hauteur": 587,
+    "sha256": "2f72d3d9398146dd9a1d71f6db4f5737147130739f1a6c0c1886c3380ae953a3",
     "photographe": "Evan-Amos",
     "licence": "Public domain",
     "licenceUrl": ""
@@ -76,9 +76,9 @@
     "source": "https://store.steampowered.com/app/227380/Dragons_Lair/",
     "imageOriginale": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/227380/ss_a2b73cbdf836a55cf8cdde0d6c20f13ace041c72.1920x1080.jpg?t=1709672143",
     "pageArchive": null,
-    "largeur": 1,
-    "hauteur": 1,
-    "sha256": "bf5246d326321cfa50d3bc2144e322ee6a2b00b3f0a056af36e7a1eedec5c2af"
+    "largeur": 960,
+    "hauteur": 540,
+    "sha256": "00f3dd252c0c0e719466696fcd853e349a85b4ffc9174bb7e8626147f91979ee"
   },
   {
     "id": "arkanoid",
@@ -89,9 +89,9 @@
     "source": "https://www.hamster.co.jp/en/release/7528/",
     "imageOriginale": "https://www.hamster.co.jp/wp/wp-content/uploads/2026/04/aca-N5tM87bQ-ss01.png",
     "pageArchive": null,
-    "largeur": 810,
-    "hauteur": 1080,
-    "sha256": "b2d1c6d4280a53d30f15be1321c25fde567580a49764819a00e79269f20d7c08"
+    "largeur": 720,
+    "hauteur": 960,
+    "sha256": "224a8f5d09d165d3474363c2b7c476193c750e8f76d2ef5eef41dab65f4d8161"
   },
   {
     "id": "pong",
@@ -128,9 +128,9 @@
     "source": "https://www.playstation.com/en-us/playstation-history/1994-ps-one/",
     "imageOriginale": "https://gmedia.playstation.com/is/image/SIEPDC/ps1-console-image-block-01-en-02oct24?fmt=png-alpha&wid=1200",
     "pageArchive": null,
-    "largeur": 1200,
-    "hauteur": 490,
-    "sha256": "d9b6bb36490db4d43b53bd40ceb7cd9daff52a56910fddb08677b2c60c6c602c"
+    "largeur": 960,
+    "hauteur": 392,
+    "sha256": "bc5402dd78eddbde3de5bcea251ff58572997546c5ed09b7086be63ba814df96"
   },
   {
     "id": "wii",
@@ -167,9 +167,9 @@
     "source": "https://store.steampowered.com/app/3300/Bejeweled_2_Deluxe/",
     "imageOriginale": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3300/0000000525.1920x1080.jpg?t=1793819586",
     "pageArchive": null,
-    "largeur": 1024,
-    "hauteur": 768,
-    "sha256": "e9b65c37cad1f863cc404ad05e18217a40c52103186dfb4a1cd704fa7a6cbcd5"
+    "largeur": 960,
+    "hauteur": 720,
+    "sha256": "1bb928fefe6e0c493fedc2f5aa17f7e18fc83a068cf095138cf636aaf17c57c1"
   },
   {
     "id": "odyssey",
@@ -180,9 +180,9 @@
     "source": "https://en.wikipedia.org/wiki/Magnavox_Odyssey",
     "imageOriginale": "https://upload.wikimedia.org/wikipedia/commons/9/99/Magnavox-Odyssey-Console-Set.jpg",
     "pageArchive": "https://commons.wikimedia.org/wiki/File:Magnavox-Odyssey-Console-Set.jpg",
-    "largeur": 1,
-    "hauteur": 1,
-    "sha256": "346a7dd042f81308a64de569d8d132017d7618834212f1e8f6f101d69d0f8fd5",
+    "largeur": 960,
+    "hauteur": 487,
+    "sha256": "d6069429614d11a75961dd81505e9b01f6a56e0f1a27ee085439536c6b42dd1d",
     "photographe": "Evan-Amos",
     "licence": "Public domain",
     "licenceUrl": ""
