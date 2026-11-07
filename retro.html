@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Jeux reconstitués · Musée Continue</title>
+    <style>
+      body {
+        margin: 0;
+        background: #0c1220;
+        color: #eef3fc;
+        font: 16px system-ui;
+      }
+      main {
+        max-width: 1150px;
+        margin: auto;
+        padding: 30px;
+      }
+      a {
+        color: #9fd6ff;
+      }
+      h1 {
+        font-size: 32px;
+      }
+      p {
+        color: #aebed5;
+        line-height: 1.6;
+      }
+      .games {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 14px;
+      }
+      .card {
+        padding: 20px;
+        background: #18243a;
+        border: 1px solid #334b69;
+        border-radius: 10px;
+      }
+      .card h2 {
+        font-size: 19px;
+      }
+      .card small {
+        color: #ffda85;
+      }
+      .card p {
+        font-size: 13px;
+        min-height: 60px;
+      }
+      .card button {
+        padding: 10px 22px;
+        border: 0;
+        border-radius: 5px;
+        background: #b9d9ff;
+        color: #12203a;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      button:focus-visible {
+        outline: 3px solid #ffd562;
+      }
+      .notice {
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a href="musee.html">← Retour au musée 3D</a>
+      <h1>Entrez dans les jeux du musée</h1>
+      <p>
+        19 reconstitutions jouables, de 1958 à 2006. Retrouvez-les aussi à leur tableau, avec un
+        clic ou la touche E.
+      </p>
+      <p class="notice">
+        Parcours et graphismes recréés pour le musée. Ces versions courtes ne sont pas les jeux
+        commerciaux complets.
+      </p>
+      <div class="games" id="games"></div>
+    </main>
+    <script type="module">
+      import { RETRO } from "./js/retro/catalog.js";
+      import { ouvrirRetro } from "./js/retro/player.js";
+      for (const info of RETRO) {
+        const card = document.createElement("article");
+        card.className = "card";
+        const date = document.createElement("small");
+        date.textContent = info.year;
+        const title = document.createElement("h2");
+        title.textContent = info.title;
+        const description = document.createElement("p");
+        description.textContent = info.description;
+        const button = document.createElement("button");
+        button.textContent = "Jouer";
+        button.setAttribute("aria-label", "Jouer à " + info.title);
+        button.addEventListener("click", () => ouvrirRetro(info.id));
+        card.append(date, title, description, button);
+        document.querySelector("#games").append(card);
+      }
+      if (location.hash) {
+        const id = location.hash.slice(1);
+        if (RETRO.some((g) => g.id === id)) ouvrirRetro(id);
+      }
+    </script>
+  </body>
+</html>

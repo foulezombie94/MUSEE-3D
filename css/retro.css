@@ -1,0 +1,154 @@
+.retro-root {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  background: #080c14;
+  color: #fff;
+  font:
+    14px system-ui,
+    sans-serif;
+  overflow: auto;
+}
+.retro-root * {
+  box-sizing: border-box;
+}
+.retro-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  background: #141b28;
+  border-bottom: 1px solid #33405a;
+}
+.retro-toolbar h2 {
+  font-size: 18px;
+  margin: 0;
+  flex: 1;
+}
+.retro-toolbar small {
+  display: block;
+  color: #a6b4c9;
+  font-size: 11px;
+  font-weight: 400;
+  margin-top: 3px;
+}
+.retro-root button {
+  border: 1px solid #52627a;
+  border-radius: 5px;
+  background: #223149;
+  color: #fff;
+  padding: 9px 13px;
+  cursor: pointer;
+  font: inherit;
+}
+.retro-root button:hover,
+.retro-root button:focus-visible {
+  background: #385171;
+  outline: 2px solid #b8d8ff;
+}
+.retro-stage {
+  flex: 1;
+  min-height: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+  background: radial-gradient(ellipse at center, #1a2436, #080c14);
+}
+.retro-stage canvas {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100dvh - 210px);
+  width: auto;
+  height: min(66dvh, 720px);
+  aspect-ratio: 4/3;
+  image-rendering: pixelated;
+  touch-action: none;
+  background: #000;
+  box-shadow: 0 14px 65px #0009;
+  outline: none;
+}
+.retro-stage canvas[data-spatial] {
+  image-rendering: auto;
+}
+.retro-footer {
+  text-align: center;
+  padding: 8px 18px 14px;
+  color: #bfcce0;
+  font-size: 13px;
+}
+.retro-footer p {
+  margin: 5px 0;
+}
+.retro-start {
+  background: #c69a38 !important;
+  color: #111 !important;
+  font-weight: 700 !important;
+}
+.retro-touch {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin: 8px;
+}
+.retro-touch button {
+  min-width: 43px;
+  touch-action: none;
+  user-select: none;
+}
+.retro-notice {
+  font-size: 11px;
+  color: #8a9cb6;
+}
+.retro-status {
+  min-height: 18px;
+  color: #ffd77c;
+}
+.retro-loading {
+  margin: auto;
+  text-align: center;
+}
+.retro-toolbar .retro-sound {
+  font-size: 12px;
+}
+@media (max-width: 600px) {
+  .retro-toolbar {
+    padding: 7px;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .retro-toolbar h2 {
+    min-width: 45%;
+    font-size: 14px;
+  }
+  .retro-root button {
+    padding: 8px;
+  }
+  .retro-stage {
+    padding: 4px;
+  }
+  .retro-stage canvas {
+    height: auto;
+    width: 100%;
+    max-height: 60dvh;
+  }
+  .retro-footer {
+    font-size: 11px;
+    padding: 5px;
+  }
+  .retro-touch {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .retro-touch button {
+    padding: 9px;
+    min-width: 36px;
+  }
+}
+@media (pointer: fine) {
+  .retro-touch {
+    display: none;
+  }
+}

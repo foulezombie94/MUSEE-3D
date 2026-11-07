@@ -1,0 +1,14 @@
+{
+  "name": "musee-3d-continue",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node serve.mjs",
+    "format": "prettier . --write --ignore-unknown",
+    "format:check": "prettier . --check --ignore-unknown"
+  },
+  "devDependencies": {
+    "prettier": "3.6.2"
+  }
+}

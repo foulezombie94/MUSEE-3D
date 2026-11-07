@@ -1,0 +1,4 @@
+# Bibliothèques tierces et fichiers binaires/générés.
+js/lib/
+assets/
+__qa-*

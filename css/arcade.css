@@ -1,0 +1,201 @@
+/* ============================================================
+   CONTINUE ? — Page Salle d'arcade
+   ============================================================ */
+
+.entete {
+  padding-block: 56px 30px;
+  display: grid;
+  gap: 12px;
+}
+.entete h1 {
+  font-size: clamp(42px, 6vw, 70px);
+}
+.entete p {
+  margin: 0;
+  color: var(--gris);
+  max-width: 60ch;
+  font-size: 17px;
+}
+
+.arcade {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+
+/* ---------- La borne ---------- */
+.borne {
+  --teinte: var(--cyan);
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #16172e, #0d0e1e);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 0 0 1px color-mix(in srgb, var(--teinte) 50%, transparent),
+    0 30px 80px -30px var(--teinte);
+}
+.fronton {
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+  background: #07070e;
+  font-family: var(--pixel);
+  font-weight: 700;
+  font-size: clamp(20px, 3vw, 30px);
+  color: var(--teinte);
+  text-shadow: 0 0 14px var(--teinte);
+}
+.borne .ecran {
+  aspect-ratio: 4 / 3;
+  touch-action: none;
+}
+.borne .ecran canvas {
+  cursor: crosshair;
+}
+
+/* Manette tactile */
+.manette {
+  display: none;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 6px 8px 2px;
+}
+.croix {
+  display: grid;
+  grid-template-columns: repeat(3, 54px);
+  grid-template-rows: repeat(3, 54px);
+}
+.croix button,
+.start {
+  border: 1px solid var(--ligne);
+  background: var(--surface-2);
+  color: var(--texte);
+  font-size: 18px;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.croix button:active,
+.start:active {
+  background: color-mix(in srgb, var(--teinte) 35%, var(--surface-2));
+}
+.croix [data-code="ArrowUp"] {
+  grid-area: 1 / 2;
+  border-radius: 10px 10px 0 0;
+}
+.croix [data-code="ArrowLeft"] {
+  grid-area: 2 / 1;
+  border-radius: 10px 0 0 10px;
+}
+.croix [data-code="ArrowRight"] {
+  grid-area: 2 / 3;
+  border-radius: 0 10px 10px 0;
+}
+.croix [data-code="ArrowDown"] {
+  grid-area: 3 / 2;
+  border-radius: 0 0 10px 10px;
+}
+.start {
+  padding: 16px 22px;
+  border-radius: 999px;
+  font-family: var(--pixel);
+  font-size: 14px;
+  border-color: var(--teinte);
+}
+@media (pointer: coarse) {
+  .manette {
+    display: flex;
+  }
+}
+
+/* ---------- Choix du jeu ---------- */
+.choix {
+  display: grid;
+  gap: 22px;
+}
+.jeux {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.jeu {
+  --teinte: var(--cyan);
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 14px;
+  align-items: center;
+  width: 100%;
+  padding: 10px;
+  text-align: left;
+  cursor: pointer;
+  border: 1px solid var(--ligne);
+  border-radius: var(--rayon);
+  background: var(--surface);
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+.jeu:hover {
+  border-color: color-mix(in srgb, var(--teinte) 60%, transparent);
+}
+.jeu[aria-pressed="true"] {
+  border-color: var(--teinte);
+  background: color-mix(in srgb, var(--teinte) 10%, var(--surface));
+}
+.jeu img {
+  width: 96px;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  image-rendering: pixelated;
+  border-radius: 6px;
+}
+.jeu .infos {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.jeu strong {
+  font-family: var(--pixel);
+  font-size: 15px;
+  color: var(--teinte);
+}
+.jeu .inspiration {
+  font-size: 13px;
+  color: var(--gris);
+}
+.jeu .record {
+  font-family: var(--pixel);
+  font-size: 11px;
+  color: var(--texte);
+  font-variant-numeric: tabular-nums;
+}
+.regles {
+  padding: 20px;
+  border-radius: var(--rayon);
+  border: 1px solid var(--ligne);
+  display: grid;
+  gap: 10px;
+}
+.regles h2 {
+  font-size: 22px;
+}
+.regles p {
+  margin: 0;
+  color: var(--gris);
+  font-size: 15px;
+}
+.regles b {
+  color: var(--texte);
+}
+
+@media (max-width: 900px) {
+  .arcade {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Salle d'arcade · Musée Continue</title>
+    <meta name="claude:viewport-fit-sides" content="cover" />
+    <meta
+      name="description"
+      content="Quatre jeux d'arcade originaux à jouer dans le navigateur : Labyrinthe, Raquettes, Serpent et Briques."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Figtree:wght@400;500;600&family=Silkscreen:wght@400;700&display=swap"
+    />
+    <link rel="stylesheet" href="css/commun.css" />
+    <link rel="stylesheet" href="css/arcade.css" />
+  </head>
+  <body>
+    <header class="navigation">
+      <div class="conteneur">
+        <a class="logo" href="index.html"
+          ><strong>CONTINUE?</strong><small>Musée du jeu vidéo</small></a
+        >
+        <nav aria-label="Navigation principale">
+          <ul class="menu">
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="musee.html">Visite 3D</a></li>
+            <li><a href="expositions.html">Expositions</a></li>
+            <li><a href="arcade.html" aria-current="page">Arcade</a></li>
+            <li><a href="projet.html">Le projet</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="conteneur">
+      <section class="entete">
+        <div class="etiquette">Salle d'arcade</div>
+        <h1>Insérez une pièce.</h1>
+        <p>
+          Quatre jeux originaux, programmés en JavaScript dans l'esprit des bornes des années 1970
+          et 1980. Votre meilleur score reste enregistré dans ce navigateur.
+        </p>
+      </section>
+
+      <div class="arcade">
+        <!-- La borne -->
+        <section class="borne" id="borne" aria-label="Écran de jeu">
+          <div class="fronton" id="fronton">RAQUETTES</div>
+          <div class="ecran" id="ecran"></div>
+          <!-- Manette tactile, visible sur téléphone et tablette -->
+          <div class="manette" id="manette" aria-label="Manette tactile">
+            <div class="croix">
+              <button data-code="ArrowUp" aria-label="Haut">▲</button>
+              <button data-code="ArrowLeft" aria-label="Gauche">◀</button>
+              <button data-code="ArrowRight" aria-label="Droite">▶</button>
+              <button data-code="ArrowDown" aria-label="Bas">▼</button>
+            </div>
+            <button class="start" data-code="Space">START</button>
+          </div>
+        </section>
+
+        <!-- Choix du jeu -->
+        <aside class="choix" aria-label="Choisir un jeu">
+          <ul class="jeux" id="jeux"></ul>
+          <div class="regles">
+            <h2 id="regle-titre"></h2>
+            <p id="regle-texte"></p>
+            <p class="commandes">
+              <b>Commandes :</b> <span id="regle-commandes"></span>. Espace ou START pour commencer,
+              P pour la pause.
+            </p>
+            <a class="bouton bouton-neon" id="regle-musee" href="musee.html"
+              >Jouer sur la borne du musée 3D →</a
+            >
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="pied">
+      <div class="conteneur">
+        <span>CONTINUE? · Projet SIN, Terminale STI2D · 2026 – 2027</span>
+        <span>Illustrations et jeux originaux, créés pour ce site</span>
+      </div>
+    </footer>
+
+    <script type="module" src="js/arcade.js"></script>
+  </body>
+</html>

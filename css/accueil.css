@@ -1,0 +1,309 @@
+/* ============================================================
+   CONTINUE ? — Page d'accueil
+   ============================================================ */
+
+/* ---------- Présentation ---------- */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 56px;
+  align-items: center;
+  padding-block: 64px 40px;
+}
+.hero-texte {
+  display: grid;
+  gap: 22px;
+  min-width: 0;
+}
+.hero h1 {
+  font-size: clamp(42px, 6vw, 74px);
+}
+.accroche {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--gris);
+  font-size: 18px;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 4px;
+}
+.chiffres {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  justify-content: start;
+  gap: 28px;
+  margin: 14px 0 0;
+}
+.chiffres div {
+  display: grid;
+  gap: 2px;
+}
+.chiffres dt {
+  order: 2;
+  font-size: 12px;
+  color: var(--gris);
+}
+.chiffres dd {
+  order: 1;
+  margin: 0;
+  font-family: var(--pixel);
+  font-size: 30px;
+  color: var(--texte);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Borne de démonstration */
+.borne-hero {
+  display: grid;
+  gap: 0;
+  max-width: 520px;
+  width: 100%;
+  justify-self: center;
+}
+.borne-hero .ecran {
+  aspect-ratio: 4 / 3;
+  border-radius: 14px 14px 4px 4px;
+}
+.borne-socle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--ligne);
+  font-family: var(--pixel);
+  font-size: 13px;
+  color: var(--bleu);
+}
+.borne-socle a {
+  color: var(--texte);
+  text-decoration: none;
+  font-family: var(--corps);
+  font-weight: 600;
+  font-size: 14px;
+}
+.borne-socle a:hover {
+  color: var(--bleu);
+}
+
+/* ---------- Sections ---------- */
+.bloc {
+  padding-top: 80px;
+}
+.titre-section {
+  font-size: clamp(30px, 3.6vw, 42px);
+  margin-bottom: 10px;
+}
+.intro-section {
+  margin: 0 0 28px;
+  color: var(--gris);
+}
+
+/* ---------- Les quatre salles ---------- */
+.salles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+.salle {
+  --teinte: var(--cyan);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px;
+  border-radius: var(--rayon);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--teinte) 12%, var(--surface)),
+    var(--surface) 55%
+  );
+  border: 1px solid color-mix(in srgb, var(--teinte) 40%, transparent);
+  text-decoration: none;
+  transition:
+    transform 0.25s,
+    box-shadow 0.25s;
+}
+.salle:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 0 0 1px var(--teinte),
+    0 14px 40px -12px var(--teinte);
+}
+.salle .numero {
+  font-family: var(--pixel);
+  font-size: 12px;
+  color: var(--teinte);
+}
+.salle h3 {
+  font-size: 23px;
+}
+.salle p {
+  margin: 0;
+  color: var(--gris);
+  font-size: 14.5px;
+  flex: 1;
+}
+.salle .vignettes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.salle .vignettes img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  image-rendering: pixelated;
+  border-radius: 4px;
+}
+.salle .lien {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--teinte);
+}
+
+/* ---------- Frise chronologique ---------- */
+.frise-defilement {
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+.frise-zone {
+  position: relative;
+  min-width: 1100px;
+  height: 460px;
+}
+.frise-traits {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.frise-traits path {
+  fill: none;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.5;
+}
+.frise {
+  position: absolute;
+  inset: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.frise::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--cyan), var(--rose) 45%, var(--ambre) 70%, var(--bleu));
+}
+.decennie {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, 12px);
+  font-family: var(--pixel);
+  font-size: 10px;
+  color: rgba(157, 155, 179, 0.7);
+}
+.point {
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  background: var(--nuit);
+  border: 2px solid var(--teinte);
+}
+.repere {
+  position: absolute;
+  width: 0;
+}
+.repere.haut {
+  top: 0;
+  height: 32%;
+}
+.repere.bas {
+  bottom: 0;
+  height: 32%;
+}
+.repere a {
+  position: absolute;
+  left: 0;
+  transform: translateX(-50%);
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  width: 92px;
+  padding: 6px;
+  border-radius: 8px;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.repere.haut a {
+  bottom: 0;
+}
+.repere.bas a {
+  top: 0;
+}
+.repere a:hover {
+  background: color-mix(in srgb, var(--teinte) 14%, transparent);
+}
+.repere img {
+  width: 72px;
+  aspect-ratio: 16 / 10;
+  image-rendering: pixelated;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px var(--teinte);
+}
+.repere .annee {
+  font-family: var(--pixel);
+  font-size: 10px;
+  color: var(--teinte);
+}
+.repere .nom {
+  font-family: var(--titre);
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.15;
+}
+.astuce-defiler {
+  display: none;
+}
+
+/* ---------- Écrans étroits ---------- */
+@media (max-width: 1020px) {
+  .salles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .astuce-defiler {
+    display: inline;
+  }
+}
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding-top: 40px;
+    gap: 36px;
+  }
+}
+@media (max-width: 560px) {
+  .salles {
+    grid-template-columns: 1fr;
+  }
+  .chiffres {
+    grid-template-columns: repeat(2, auto);
+    gap: 16px 32px;
+  }
+  .accroche {
+    font-size: 16.5px;
+  }
+}

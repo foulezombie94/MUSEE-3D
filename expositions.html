@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Expositions · Musée Continue</title>
+    <meta name="claude:viewport-fit-sides" content="cover" />
+    <meta
+      name="description"
+      content="Les vingt-deux expositions du musée Continue, avec recherche, filtre par salle et fiche en plein écran."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Figtree:wght@400;500;600&family=Silkscreen:wght@400;700&display=swap"
+    />
+    <link rel="stylesheet" href="css/commun.css" />
+    <link rel="stylesheet" href="css/expositions.css" />
+  </head>
+  <body>
+    <header class="navigation">
+      <div class="conteneur">
+        <a class="logo" href="index.html"
+          ><strong>CONTINUE?</strong><small>Musée du jeu vidéo</small></a
+        >
+        <nav aria-label="Navigation principale">
+          <ul class="menu">
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="musee.html">Visite 3D</a></li>
+            <li><a href="expositions.html" aria-current="page">Expositions</a></li>
+            <li><a href="arcade.html">Arcade</a></li>
+            <li><a href="projet.html">Le projet</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="conteneur">
+      <section class="entete">
+        <div class="etiquette">Catalogue</div>
+        <h1>Les expositions</h1>
+        <p>
+          Vingt-deux machines, jeux et événements, répartis dans quatre salles. Cliquez sur un écran
+          pour lire son histoire.
+        </p>
+      </section>
+
+      <!-- Recherche et filtres -->
+      <section class="outils-recherche" aria-label="Rechercher une exposition">
+        <div class="champ">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-4-4" />
+          </svg>
+          <input
+            id="recherche"
+            type="search"
+            placeholder="Rechercher un jeu, une console, un créateur, une année…"
+            autocomplete="off"
+            aria-label="Rechercher une exposition"
+          />
+        </div>
+        <div class="filtres">
+          <div class="puces" id="puces" role="group" aria-label="Filtrer par salle"></div>
+          <div class="compteur" id="compteur" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <!-- Les expositions, regroupées par salle (remplies par js/expositions-page.js) -->
+      <div id="catalogue"></div>
+      <p class="vide" id="vide" hidden>
+        Aucune exposition ne correspond. Essayez « Nintendo », « 1980 » ou « console ».
+      </p>
+    </main>
+
+    <!-- Fiche plein écran -->
+    <div
+      class="visionneuse"
+      id="visionneuse"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="v-titre"
+      hidden
+    >
+      <div class="v-image">
+        <div class="ecran" id="v-ecran"><img id="v-img" alt="" /></div>
+      </div>
+      <aside class="v-texte">
+        <button class="fermer" id="v-fermer" aria-label="Fermer">
+          <svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5 5 19" /></svg>
+        </button>
+        <div class="etiquette" id="v-salle"></div>
+        <h2 id="v-titre"></h2>
+        <dl class="cartel">
+          <dt>Date</dt>
+          <dd id="v-date"></dd>
+          <dt>Créé par</dt>
+          <dd id="v-createur"></dd>
+          <dt>Lieu</dt>
+          <dd id="v-lieu"></dd>
+          <dt>Support</dt>
+          <dd id="v-support"></dd>
+        </dl>
+        <p class="v-histoire" id="v-texte"></p>
+        <div class="v-nav">
+          <button class="bouton" id="v-prec" aria-label="Exposition précédente">←</button>
+          <button class="bouton" id="v-suiv" aria-label="Exposition suivante">→</button>
+          <a class="bouton bouton-neon" id="v-3d" href="musee.html">Voir dans le musée 3D</a>
+        </div>
+        <p class="astuce">Flèches du clavier pour naviguer · Échap pour fermer</p>
+      </aside>
+    </div>
+
+    <footer class="pied">
+      <div class="conteneur">
+        <span>CONTINUE? · Projet SIN, Terminale STI2D · 2026 – 2027</span>
+        <span>Illustrations et jeux originaux, créés pour ce site</span>
+      </div>
+    </footer>
+
+    <script type="module" src="js/expositions-page.js"></script>
+  </body>
+</html>

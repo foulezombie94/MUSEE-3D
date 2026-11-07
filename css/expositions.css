@@ -1,0 +1,314 @@
+/* ============================================================
+   CONTINUE ? — Page Expositions (catalogue)
+   ============================================================ */
+
+.entete {
+  padding-block: 56px 26px;
+  display: grid;
+  gap: 12px;
+}
+.entete h1 {
+  font-size: clamp(42px, 6vw, 70px);
+}
+.entete p {
+  margin: 0;
+  color: var(--gris);
+  max-width: 58ch;
+  font-size: 17px;
+}
+
+/* ---------- Recherche et filtres ---------- */
+.outils-recherche {
+  position: sticky;
+  top: calc(env(safe-area-inset-top, 0px) + 67px);
+  z-index: 20;
+  display: grid;
+  gap: 12px;
+  padding-block: 14px;
+  background: linear-gradient(180deg, var(--nuit) 80%, rgba(7, 7, 14, 0));
+}
+.champ {
+  position: relative;
+}
+.champ svg {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  margin-top: -9px;
+  stroke: var(--gris);
+  fill: none;
+  stroke-width: 1.8;
+}
+#recherche {
+  width: 100%;
+  padding: 14px 16px 14px 46px;
+  border: 1px solid var(--ligne);
+  border-radius: 10px;
+  background: var(--surface);
+  font-size: 16px;
+}
+#recherche::placeholder {
+  color: var(--gris);
+}
+#recherche:focus {
+  outline: none;
+  border-color: var(--cyan);
+}
+.filtres {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.puces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.puce {
+  --teinte: var(--cyan);
+  padding: 7px 12px;
+  border: 1px solid var(--ligne);
+  border-radius: 8px;
+  background: transparent;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+.puce:hover {
+  border-color: var(--teinte);
+}
+.puce[aria-pressed="true"] {
+  border-color: var(--teinte);
+  background: color-mix(in srgb, var(--teinte) 18%, transparent);
+}
+.compteur {
+  font-size: 13px;
+  color: var(--gris);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Catalogue ---------- */
+.groupe {
+  --teinte: var(--cyan);
+  padding-top: 40px;
+}
+.groupe-tete {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 16px;
+  margin-bottom: 22px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--teinte) 40%, transparent);
+}
+.groupe-tete h2 {
+  font-size: 28px;
+}
+.groupe-tete .etiquette {
+  color: var(--teinte);
+}
+.groupe-tete p {
+  margin: 0;
+  flex-basis: 100%;
+  color: var(--gris);
+  font-size: 15px;
+}
+.grille {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 28px 22px;
+}
+.grille li {
+  animation: apparition 0.45s ease both;
+}
+@keyframes apparition {
+  from {
+    opacity: 0.001;
+    transform: translateY(8px);
+  }
+}
+.carte {
+  display: grid;
+  gap: 14px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+.carte .ecran {
+  aspect-ratio: 16 / 10;
+  margin: 7px;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
+}
+.carte:hover .ecran {
+  transform: translateY(-3px);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 0 0 6px #14152a,
+    0 0 0 7px var(--teinte),
+    0 0 44px -2px var(--teinte);
+}
+.legende {
+  display: grid;
+  gap: 2px;
+  padding-inline: 4px;
+}
+.legende .annee {
+  font-family: var(--pixel);
+  font-size: 11px;
+  color: var(--teinte);
+}
+.legende strong {
+  font-family: var(--titre);
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.2;
+}
+.legende span:last-child {
+  font-size: 14px;
+  color: var(--gris);
+}
+.vide {
+  color: var(--gris);
+  padding: 32px 0;
+}
+
+/* ---------- Fiche plein écran ---------- */
+.visionneuse {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(320px, 1fr);
+  background: rgba(5, 5, 12, 0.97);
+  animation: fondu 0.25s ease;
+}
+@keyframes fondu {
+  from {
+    opacity: 0;
+  }
+}
+.v-image {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  padding: calc(32px + env(safe-area-inset-top, 0px)) 40px
+    calc(32px + env(safe-area-inset-bottom, 0px)) max(40px, env(safe-area-inset-left, 0px));
+}
+.v-image .ecran {
+  width: 100%;
+  max-width: 880px;
+  aspect-ratio: 16 / 10;
+}
+.v-texte {
+  min-width: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: calc(28px + env(safe-area-inset-top, 0px)) max(28px, env(safe-area-inset-right, 0px))
+    calc(28px + env(safe-area-inset-bottom, 0px)) 28px;
+  border-left: 1px solid var(--ligne);
+}
+.fermer {
+  align-self: flex-end;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border: 1px solid var(--ligne);
+  border-radius: 10px;
+  background: var(--verre);
+  cursor: pointer;
+}
+.fermer:hover {
+  border-color: var(--cyan);
+}
+.fermer svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+}
+.v-texte h2 {
+  font-size: clamp(32px, 3.4vw, 46px);
+}
+.cartel {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 18px;
+  margin: 0;
+  padding-block: 14px;
+  border-block: 1px solid var(--ligne);
+  font-size: 14px;
+}
+.cartel dt {
+  color: var(--gris);
+}
+.cartel dd {
+  margin: 0;
+}
+.v-histoire {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.75;
+  color: #d6d4e2;
+  max-width: 60ch;
+}
+.v-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+}
+.v-nav .bouton {
+  padding: 11px 18px;
+}
+.astuce {
+  margin: 0;
+  font-size: 12px;
+  color: var(--gris);
+}
+
+@media (max-width: 820px) {
+  .visionneuse {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .v-image {
+    padding: calc(66px + env(safe-area-inset-top, 0px)) 22px 18px;
+  }
+  .v-texte {
+    border-left: 0;
+    border-top: 1px solid var(--ligne);
+    padding: 20px max(20px, env(safe-area-inset-right, 0px))
+      calc(22px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px));
+  }
+  .fermer {
+    position: fixed;
+    top: calc(14px + env(safe-area-inset-top, 0px));
+    right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .astuce {
+    display: none;
+  }
+  .outils-recherche {
+    top: calc(env(safe-area-inset-top, 0px) + 100px);
+  }
+}

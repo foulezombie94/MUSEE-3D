@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Musée Continue</title>
+    <meta name="claude:viewport-fit-sides" content="cover" />
+    <meta
+      name="description"
+      content="Continue ?, un musée du jeu vidéo en 3D : quatre salles de 1958 à 2011, vingt-deux expositions et quatre bornes d'arcade jouables."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Figtree:wght@400;500;600&family=Silkscreen:wght@400;700&display=swap"
+    />
+    <link rel="stylesheet" href="css/commun.css" />
+    <link rel="stylesheet" href="css/accueil.css" />
+  </head>
+  <body>
+    <!-- Navigation commune à toutes les pages -->
+    <header class="navigation">
+      <div class="conteneur">
+        <a class="logo" href="index.html"
+          ><strong>CONTINUE?</strong><small>Musée du jeu vidéo</small></a
+        >
+        <nav aria-label="Navigation principale">
+          <ul class="menu">
+            <li><a href="index.html" aria-current="page">Accueil</a></li>
+            <li><a href="musee.html">Visite 3D</a></li>
+            <li><a href="expositions.html">Expositions</a></li>
+            <li><a href="arcade.html">Arcade</a></li>
+            <li><a href="projet.html">Le projet</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- Présentation : une borne qui joue toute seule -->
+      <section class="hero conteneur">
+        <div class="hero-texte">
+          <div class="etiquette">Musée virtuel · 1958 → 2011</div>
+          <h1>Du premier pixel au monde ouvert.</h1>
+          <p class="accroche">
+            Parcourez en 3D quatre salles consacrées à l'histoire du jeu vidéo, lisez l'histoire de
+            vingt-deux machines et jeux qui ont tout changé, puis jouez sur les bornes d'arcade.
+          </p>
+          <div class="actions">
+            <a class="bouton bouton-neon" href="musee.html">
+              Entrer dans le musée
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </a>
+            <a class="bouton" href="arcade.html">Jouer tout de suite</a>
+            <a class="bouton" href="musee.html#minecraft" style="--teinte: #8fc65b"
+              >Tableau Minecraft →</a
+            >
+          </div>
+          <dl class="chiffres">
+            <div>
+              <dt>Salles</dt>
+              <dd>4</dd>
+            </div>
+            <div>
+              <dt>Expositions</dt>
+              <dd>22</dd>
+            </div>
+            <div>
+              <dt>Bornes jouables</dt>
+              <dd>4</dd>
+            </div>
+            <div>
+              <dt>Années d'histoire</dt>
+              <dd>53</dd>
+            </div>
+          </dl>
+        </div>
+        <div class="borne-hero">
+          <div class="ecran" style="--teinte: var(--bleu)">
+            <canvas id="demo" aria-label="Partie de démonstration du jeu Labyrinthe"></canvas>
+          </div>
+          <div class="borne-socle">
+            <span>LABYRINTHE</span><a href="arcade.html#labyrinthe">Jouer →</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Les quatre salles -->
+      <section class="conteneur bloc" aria-labelledby="titre-salles">
+        <h2 id="titre-salles" class="titre-section">Les quatre salles</h2>
+        <p class="intro-section">
+          Chaque salle a sa couleur de néon. Cliquez pour vous y téléporter dans la visite 3D.
+        </p>
+        <div class="salles" id="salles"></div>
+      </section>
+
+      <!-- Frise chronologique -->
+      <section class="conteneur bloc" aria-labelledby="titre-frise">
+        <h2 id="titre-frise" class="titre-section">53 ans en un coup d'œil</h2>
+        <p class="intro-section">
+          Chaque point est placé à sa vraie date. Cliquez pour lire l'exposition.<span
+            class="astuce-defiler"
+          >
+            Faites glisser la frise pour la parcourir.</span
+          >
+        </p>
+        <div class="frise-defilement">
+          <div class="frise-zone">
+            <svg
+              class="frise-traits"
+              id="frise-traits"
+              viewBox="0 0 1000 100"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            ></svg>
+            <ol class="frise" id="frise"></ol>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="pied">
+      <div class="conteneur">
+        <span>CONTINUE? · Projet SIN, Terminale STI2D · 2026 – 2027</span>
+        <span>Illustrations et jeux originaux, créés pour ce site</span>
+      </div>
+    </footer>
+
+    <script type="module" src="js/accueil.js"></script>
+  </body>
+</html>

@@ -1,0 +1,318 @@
+/* ============================================================
+   CONTINUE ? — Page « Le projet »
+   ============================================================ */
+
+.entete {
+  padding-block: 56px 24px;
+  display: grid;
+  gap: 12px;
+}
+.entete h1 {
+  font-size: clamp(42px, 6vw, 70px);
+}
+.entete p {
+  margin: 0;
+  color: var(--gris);
+  max-width: 60ch;
+  font-size: 17px;
+}
+
+.sommaire {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--ligne);
+}
+.sommaire a {
+  padding: 7px 13px;
+  border: 1px solid var(--ligne);
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 13px;
+  color: var(--gris);
+  transition:
+    color 0.2s,
+    border-color 0.2s;
+}
+.sommaire a:hover {
+  color: var(--texte);
+  border-color: var(--cyan);
+}
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px;
+}
+
+.bloc {
+  padding-top: 72px;
+  display: grid;
+  gap: 22px;
+}
+.bloc h2 {
+  font-size: clamp(30px, 3.4vw, 40px);
+}
+.intro {
+  margin: 0;
+  color: var(--gris);
+  max-width: 64ch;
+}
+code {
+  font-size: 0.92em;
+  color: var(--cyan);
+}
+
+/* ---------- Équipe ---------- */
+.equipe {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.membre {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 18px;
+  align-items: start;
+  padding: 24px;
+  border: 1px solid var(--ligne);
+  border-radius: var(--rayon);
+  background: var(--surface);
+}
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-family: var(--pixel);
+  font-size: 20px;
+  background: var(--cyan);
+  color: var(--nuit);
+}
+.role {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+.membre h3 {
+  font-size: 25px;
+  margin: 4px 0 8px;
+}
+.membre p {
+  margin: 0;
+  color: var(--gris);
+  font-size: 15px;
+}
+.a-completer {
+  border-style: dashed;
+}
+.a-completer .avatar {
+  background: var(--surface-2);
+  color: var(--gris);
+}
+
+/* ---------- Schéma d'architecture ---------- */
+.schema-defilement {
+  overflow-x: auto;
+  border: 1px solid var(--ligne);
+  border-radius: var(--rayon);
+  background: var(--surface);
+}
+.schema {
+  display: block;
+  min-width: 760px;
+  width: 100%;
+  height: auto;
+  padding: 8px;
+}
+.boite rect {
+  fill: var(--surface-2);
+  stroke: rgba(237, 231, 217, 0.22);
+  stroke-width: 1;
+}
+.boite.serveur > rect:first-child {
+  fill: rgba(60, 242, 200, 0.06);
+  stroke: var(--cyan);
+}
+.boite .interne {
+  fill: var(--nuit);
+  stroke: rgba(237, 231, 217, 0.16);
+}
+.boite.client rect {
+  stroke: var(--cyan);
+}
+.boite.externe rect {
+  stroke-dasharray: 5 4;
+}
+.b-titre {
+  fill: var(--texte);
+  font: 600 17px var(--texte);
+}
+.b-titre.petit {
+  font-size: 16px;
+}
+.b-texte {
+  fill: var(--gris);
+  font: 400 14px var(--texte);
+}
+.lien {
+  fill: none;
+  stroke: var(--cyan);
+  stroke-width: 1.6;
+}
+.lien.retour {
+  stroke: var(--rose);
+}
+.lien.pointille {
+  stroke-dasharray: 5 5;
+  stroke: var(--gris);
+}
+.trait-fleche {
+  fill: none;
+  stroke: context-stroke;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.l-texte {
+  fill: var(--texte);
+  font: 500 13.5px var(--texte);
+}
+
+/* ---------- Tableau des technologies ---------- */
+.tableau-defilement {
+  overflow-x: auto;
+}
+.technos {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+.technos th,
+.technos td {
+  padding: 13px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--ligne);
+  vertical-align: top;
+}
+.technos thead th {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gris);
+  font-weight: 600;
+}
+.technos tbody th {
+  font-family: var(--titre);
+  font-weight: 500;
+  font-size: 18px;
+  white-space: nowrap;
+  color: var(--cyan);
+}
+.technos td {
+  color: #d8d2c4;
+}
+
+/* ---------- Arborescence ---------- */
+.deux-colonnes {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: 22px 40px;
+}
+.arbre {
+  margin: 0;
+  padding: 22px 24px;
+  overflow-x: auto;
+  border: 1px solid var(--ligne);
+  border-radius: var(--rayon);
+  background: var(--surface);
+  font:
+    13.5px/1.75 ui-monospace,
+    "Cascadia Code",
+    Consolas,
+    monospace;
+  color: var(--texte);
+}
+.arbre .d {
+  color: var(--cyan);
+  font-weight: 600;
+}
+.arbre .c {
+  color: var(--gris);
+}
+
+/* ---------- Notions 3D ---------- */
+.notions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.notions article {
+  padding: 22px;
+  border-top: 2px solid var(--teinte, var(--cyan));
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--teinte, var(--cyan)) 8%, transparent),
+    transparent 70%
+  );
+}
+.notions h3 {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+.notions p {
+  margin: 0;
+  color: var(--gris);
+  font-size: 15px;
+}
+
+/* ---------- Étapes de la démarche ---------- */
+.etapes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: etape;
+  display: grid;
+  gap: 0;
+}
+.etapes li {
+  counter-increment: etape;
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 4px 18px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--ligne);
+}
+.etapes li::before {
+  content: counter(etape);
+  grid-row: span 2;
+  font-family: var(--pixel);
+  font-size: 30px;
+  line-height: 1;
+  color: var(--cyan);
+}
+.etapes h3 {
+  font-size: 22px;
+}
+.etapes p {
+  margin: 0;
+  color: var(--gris);
+  font-size: 15px;
+  max-width: 70ch;
+}
+
+@media (max-width: 760px) {
+  .equipe,
+  .notions,
+  .deux-colonnes {
+    grid-template-columns: 1fr;
+  }
+  .etapes li {
+    grid-template-columns: 44px 1fr;
+  }
+  .etapes li::before {
+    font-size: 30px;
+  }
+}

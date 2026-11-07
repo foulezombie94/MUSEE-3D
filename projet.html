@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Le projet · Musée Continue</title>
+    <meta name="claude:viewport-fit-sides" content="cover" />
+    <meta
+      name="description"
+      content="Coulisses du musée Continue : équipe, architecture client / serveur, technologies, fonctionnement de la 3D et démarche."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Figtree:wght@400;500;600&family=Silkscreen:wght@400;700&display=swap"
+    />
+    <link rel="stylesheet" href="css/commun.css" />
+    <link rel="stylesheet" href="css/projet.css" />
+  </head>
+  <body>
+    <header class="navigation">
+      <div class="conteneur">
+        <a class="logo" href="index.html"
+          ><strong>CONTINUE?</strong><small>Musée du jeu vidéo</small></a
+        >
+        <nav aria-label="Navigation principale">
+          <ul class="menu">
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="musee.html">Visite 3D</a></li>
+            <li><a href="expositions.html">Expositions</a></li>
+            <li><a href="arcade.html">Arcade</a></li>
+            <li><a href="projet.html" aria-current="page">Le projet</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="conteneur">
+      <section class="entete">
+        <div class="etiquette">Projet SIN · Terminale STI2D</div>
+        <h1>Dans les coulisses du musée</h1>
+        <p>
+          Comment nous avons conçu, programmé et mis en ligne le musée Continue sur le serveur web
+          de denismasse.fr, hébergé chez OVH.
+        </p>
+      </section>
+
+      <nav class="sommaire" aria-label="Sommaire">
+        <a href="#equipe">L'équipe</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#technologies">Technologies</a>
+        <a href="#fichiers">Fichiers</a>
+        <a href="#trois-d">La 3D</a>
+        <a href="#demarche">Démarche</a>
+      </nav>
+
+      <!-- L'équipe -->
+      <section class="bloc" id="equipe" aria-labelledby="t-equipe">
+        <h2 id="t-equipe">L'équipe</h2>
+        <div class="equipe">
+          <article class="membre">
+            <div class="avatar" aria-hidden="true">P1</div>
+            <div>
+              <div class="role">Chef de projet</div>
+              <h3>Mohamed</h3>
+              <p>
+                Intégration des pages, programmation de la visite 3D et des quatre jeux (jouables
+                directement sur les bornes 3D), transfert des fichiers vers l'hébergeur.
+              </p>
+            </div>
+          </article>
+          <article class="membre a-completer">
+            <div class="avatar" aria-hidden="true">P2</div>
+            <div>
+              <div class="role">Ingénieur d'étude multimédia</div>
+              <h3>Prénom à compléter</h3>
+              <p>
+                Recherche historique, rédaction des expositions, illustrations en pixel art et page
+                Expositions.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Architecture client / serveur -->
+      <section class="bloc" id="architecture" aria-labelledby="t-archi">
+        <h2 id="t-archi">Architecture client / serveur</h2>
+        <p class="intro">
+          Le site est développé sur notre poste, puis envoyé par FTP sur le serveur Apache d'OVH. Le
+          visiteur passe par le DNS pour trouver le serveur, puis reçoit les fichiers par HTTP.
+          Toute la 3D et les jeux sont ensuite calculés dans son navigateur.
+        </p>
+        <div class="schema-defilement">
+          <svg
+            class="schema"
+            viewBox="0 0 900 470"
+            role="img"
+            aria-labelledby="schema-titre schema-desc"
+          >
+            <title id="schema-titre">Architecture du site Continue</title>
+            <desc id="schema-desc">
+              Le poste de développement envoie les fichiers par FTP au serveur OVH. Le navigateur du
+              visiteur interroge le DNS, demande les pages au serveur Apache, et charge les polices
+              depuis Google Fonts.
+            </desc>
+            <defs>
+              <marker
+                id="fleche"
+                viewBox="0 0 10 10"
+                refX="9"
+                refY="5"
+                markerWidth="7"
+                markerHeight="7"
+                orient="auto-start-reverse"
+              >
+                <path d="M1 1 9 5 1 9" class="trait-fleche" />
+              </marker>
+            </defs>
+            <g class="boite">
+              <rect x="20" y="40" width="240" height="110" rx="10" />
+              <text x="40" y="74" class="b-titre">Poste de développement</text>
+              <text x="40" y="100" class="b-texte">Visual Studio Code</text>
+              <text x="40" y="122" class="b-texte">HTML · CSS · JavaScript</text>
+            </g>
+            <g class="boite serveur">
+              <rect x="20" y="250" width="380" height="190" rx="14" />
+              <text x="44" y="284" class="b-titre">Serveur OVH · Linux</text>
+              <rect x="44" y="306" width="150" height="104" rx="8" class="interne" />
+              <text x="62" y="338" class="b-titre petit">Apache</text>
+              <text x="62" y="362" class="b-texte">serveur web</text>
+              <text x="62" y="384" class="b-texte">HTTP / HTTPS</text>
+              <rect x="214" y="306" width="162" height="104" rx="8" class="interne" />
+              <text x="232" y="338" class="b-titre petit">Dossier www</text>
+              <text x="232" y="362" class="b-texte">5 pages .html</text>
+              <text x="232" y="384" class="b-texte">css/ et js/</text>
+            </g>
+            <g class="boite client">
+              <rect x="620" y="250" width="260" height="110" rx="10" />
+              <text x="640" y="284" class="b-titre">Navigateur du visiteur</text>
+              <text x="640" y="310" class="b-texte">Client : affiche les pages,</text>
+              <text x="640" y="332" class="b-texte">calcule la 3D et les jeux</text>
+            </g>
+            <g class="boite">
+              <rect x="620" y="40" width="260" height="90" rx="10" />
+              <text x="640" y="74" class="b-titre">DNS · OVH</text>
+              <text x="640" y="100" class="b-texte">denismasse.fr → adresse IP</text>
+            </g>
+            <g class="boite externe">
+              <rect x="330" y="40" width="230" height="90" rx="10" />
+              <text x="350" y="74" class="b-titre">Google Fonts</text>
+              <text x="350" y="100" class="b-texte">polices de caractères</text>
+            </g>
+            <path d="M140 150 V244" class="lien" marker-end="url(#fleche)" />
+            <text x="152" y="204" class="l-texte">Transfert FTP (FileZilla)</text>
+            <path d="M750 250 V136" class="lien" marker-end="url(#fleche)" />
+            <text x="762" y="198" class="l-texte">1. Requête DNS</text>
+            <path d="M614 284 H406" class="lien" marker-end="url(#fleche)" />
+            <text x="436" y="274" class="l-texte">2. Requête HTTP</text>
+            <path d="M406 330 H614" class="lien retour" marker-end="url(#fleche)" />
+            <text x="436" y="352" class="l-texte">3. Pages + fichiers</text>
+            <path
+              d="M660 250 C640 190 560 160 520 136"
+              class="lien pointille"
+              marker-end="url(#fleche)"
+            />
+            <text x="560" y="206" class="l-texte">polices</text>
+          </svg>
+        </div>
+      </section>
+
+      <!-- Technologies -->
+      <section class="bloc" id="technologies" aria-labelledby="t-techno">
+        <h2 id="t-techno">Technologies utilisées</h2>
+        <div class="tableau-defilement">
+          <table class="technos">
+            <thead>
+              <tr>
+                <th scope="col">Technologie</th>
+                <th scope="col">Rôle dans le site</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">HTML5</th>
+                <td>
+                  Structure des cinq pages : navigation, sections, fiches, formulaire de recherche,
+                  balises canvas.
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">CSS3</th>
+                <td>
+                  Grilles, effets néon, animations, adaptation au téléphone. Une couleur de néon par
+                  salle.
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">JavaScript (modules)</th>
+                <td>
+                  Recherche et filtres, fiches, frise, déplacements dans le musée, programmation des
+                  trois jeux.
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Canvas 2D</th>
+                <td>Dessin pixel par pixel des 22 illustrations et affichage des jeux d'arcade.</td>
+              </tr>
+              <tr>
+                <th scope="row">Three.js · WebGL</th>
+                <td>
+                  Bibliothèque 3D : salles, néons, sol réfléchissant, bornes, effet de halo
+                  lumineux.
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">localStorage</th>
+                <td>Mémorise le meilleur score de chaque jeu dans le navigateur du joueur.</td>
+              </tr>
+              <tr>
+                <th scope="row">Apache · Linux</th>
+                <td>Serveur web chez OVH qui envoie nos fichiers aux navigateurs.</td>
+              </tr>
+              <tr>
+                <th scope="row">FTP · FileZilla</th>
+                <td>Transfert des fichiers de notre poste vers le serveur distant.</td>
+              </tr>
+              <tr>
+                <th scope="row">DNS</th>
+                <td>Traduit le nom de domaine denismasse.fr en adresse IP du serveur.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Organisation des fichiers -->
+      <section class="bloc deux-colonnes" id="fichiers" aria-labelledby="t-fichiers">
+        <div>
+          <h2 id="t-fichiers">Organisation des fichiers</h2>
+          <p class="intro">
+            Les données du musée sont écrites une seule fois, dans <code>js/expositions.js</code>,
+            et partagées par toutes les pages. Chaque partie de la 3D a son propre fichier.
+          </p>
+        </div>
+        <pre class="arbre" aria-label="Arborescence du site"><span class="d">musee-continue/</span>
+├── index.html         <span class="c">accueil</span>
+├── musee.html         <span class="c">visite 3D</span>
+├── expositions.html   <span class="c">catalogue</span>
+├── arcade.html        <span class="c">les 3 jeux</span>
+├── projet.html        <span class="c">cette page</span>
+├── <span class="d">css/</span>               <span class="c">un fichier par page + commun</span>
+└── <span class="d">js/</span>
+    ├── expositions.js <span class="c">données</span>
+    ├── illustrations.js <span class="c">pixel art</span>
+    ├── <span class="d">jeux/</span>          <span class="c">raquettes, serpent, briques</span>
+    ├── <span class="d">musee/</span>         <span class="c">plan, bâtiment, vitrines…</span>
+    └── <span class="d">lib/</span>           <span class="c">Three.js</span></pre>
+      </section>
+
+      <!-- Fonctionnement de la 3D -->
+      <section class="bloc" id="trois-d" aria-labelledby="t-3d">
+        <h2 id="t-3d">Comment fonctionne la visite 3D</h2>
+        <div class="notions">
+          <article style="--teinte: var(--cyan)">
+            <h3>Le plan</h3>
+            <p>
+              Quatre salles de 16 m sur 26 m, alignées et reliées par des portes de 4 m. Le fichier
+              <code>plan.js</code> contient toutes les mesures et calcule les collisions avec les
+              murs.
+            </p>
+          </article>
+          <article style="--teinte: var(--rose)">
+            <h3>La caméra</h3>
+            <p>
+              Placée à 1,70 m du sol, la hauteur des yeux. Le clavier, la souris ou le joystick
+              tactile changent sa position et son orientation à chaque image.
+            </p>
+          </article>
+          <article style="--teinte: var(--ambre)">
+            <h3>Les néons</h3>
+            <p>
+              Les tubes ont une couleur plus lumineuse que le blanc. Un effet de post-traitement
+              (bloom) repère ces zones très claires et leur ajoute un halo.
+            </p>
+          </article>
+          <article style="--teinte: var(--bleu)">
+            <h3>Les bornes</h3>
+            <p>
+              Chaque borne fait tourner une vraie partie en mode démo dans un canvas invisible,
+              recopié sur l'écran 3D à chaque image.
+            </p>
+          </article>
+          <article style="--teinte: var(--cyan)">
+            <h3>Le clic sur un écran</h3>
+            <p>
+              On lance un rayon invisible depuis la caméra (raycasting). Le premier écran touché
+              indique l'exposition à ouvrir ou le jeu à lancer.
+            </p>
+          </article>
+          <article style="--teinte: var(--rose)">
+            <h3>Les trajets automatiques</h3>
+            <p>
+              Pour aller vers une exposition, la caméra suit un chemin qui passe par le milieu des
+              portes et contourne les socles et les bornes.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- Démarche -->
+      <section class="bloc" id="demarche" aria-labelledby="t-demarche">
+        <h2 id="t-demarche">Notre démarche</h2>
+        <ol class="etapes">
+          <li>
+            <h3>Choix du thème</h3>
+            <p>
+              Comparaison de plusieurs idées, puis choix d'un musée du jeu vidéo en 3D : original,
+              interactif, et adapté à une photothèque avec recherche.
+            </p>
+          </li>
+          <li>
+            <h3>Droits d'auteur</h3>
+            <p>
+              Les images de jeux et les personnages sont protégés. Nous avons donc dessiné nos
+              propres illustrations en pixel art et programmé nos propres jeux.
+            </p>
+          </li>
+          <li>
+            <h3>Maquette et recherche</h3>
+            <p>
+              Analyse de sites primés sur Awwwards, choix des couleurs par salle et des polices,
+              rédaction des 22 expositions à partir de sources historiques.
+            </p>
+          </li>
+          <li>
+            <h3>Développement</h3>
+            <p>
+              Pages en HTML et CSS, puis JavaScript : recherche, fiches, les trois jeux, et enfin le
+              musée en 3D avec Three.js.
+            </p>
+          </li>
+          <li>
+            <h3>Tests</h3>
+            <p>
+              Essais sur ordinateur et sur téléphone, vérification de la fluidité, des collisions et
+              des commandes tactiles.
+            </p>
+          </li>
+          <li>
+            <h3>Mise en ligne</h3>
+            <p>
+              Transfert des dossiers avec FileZilla sur le serveur OVH, puis vérification du site à
+              l'adresse finale.
+            </p>
+          </li>
+        </ol>
+      </section>
+    </main>
+
+    <footer class="pied">
+      <div class="conteneur">
+        <span>CONTINUE? · Projet SIN, Terminale STI2D · 2026 – 2027</span>
+        <span>Illustrations et jeux originaux, créés pour ce site</span>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <title>Minecraft · Le monde du musée Continue</title>
+    <meta
+      name="description"
+      content="Recréation jouable indépendante : monde de blocs, exploration, construction et survie. Textures originales."
+    />
+    <link rel="stylesheet" href="css/minecraft.css" />
+    <link rel="stylesheet" href="css/minecraft-vanilla.css" />
+    <style>
+      body {
+        margin: 0;
+        background: #1c291c;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      import { ouvrirMinecraft } from "./js/minecraft/game.js";
+      try {
+        ouvrirMinecraft({
+          onClose: () => {
+            location.href = "musee.html#minecraft";
+          },
+        });
+      } catch (error) {
+        document.body.style.color = "white";
+        document.body.textContent =
+          "Le monde ne peut pas démarrer. Ouvrez le projet avec LANCER-MUSEE.cmd ou un serveur web et activez WebGL dans votre navigateur.";
+        console.error(error);
+      }
+    </script>
+  </body>
+</html>

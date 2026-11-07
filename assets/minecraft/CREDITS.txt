@@ -1,0 +1,5 @@
+Minecraft Java Edition 1.20.4 texture and bitmap font assets © Mojang AB / Microsoft.
+Source: official client asset archive, SHA1 fd19469fed4a4b4c15b2d5133985f0e3e7816a8a.
+Museum integration, voxel engine and UI implementation are independent.
+Not an official Minecraft product. Not approved by or associated with Mojang or Microsoft.
+https://www.minecraft.net/usage-guidelines

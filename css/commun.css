@@ -1,0 +1,302 @@
+/* ============================================================
+   CONTINUE ? — Styles communs à toutes les pages
+   Concept : une salle d'arcade la nuit. Fond bleu-noir,
+   néons de couleur (une couleur par salle du musée),
+   textes courts en police pixel, titres en Chakra Petch.
+   Un seul thème sombre, choisi volontairement.
+   ============================================================ */
+
+:root {
+  /* Couleurs */
+  --nuit: #07070e; /* fond des pages */
+  --surface: #0f1020; /* cartes et panneaux */
+  --surface-2: #171a30;
+  --verre: rgba(14, 15, 32, 0.78);
+  --texte: #e9e7f2;
+  --gris: #9d9bb3;
+  --ligne: rgba(233, 231, 242, 0.12);
+  --cyan: #3cf2c8; /* salle 1 et accent principal */
+  --rose: #ff4f9a; /* salle 2 */
+  --ambre: #ffb23e; /* salle 3 */
+  --bleu: #7c9cff; /* salle 4 */
+
+  /* Typographie */
+  --pixel: "Silkscreen", "Courier New", monospace;
+  --titre: "Chakra Petch", "Segoe UI", system-ui, sans-serif;
+  --corps: "Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
+
+  --largeur-max: 1200px;
+  --rayon: 12px;
+  color-scheme: dark;
+}
+
+/* ---------- Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+[hidden] {
+  display: none !important;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  background: var(--nuit);
+  color: var(--texte);
+  font-family: var(--corps);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+img,
+canvas {
+  max-width: 100%;
+  display: block;
+}
+a {
+  color: inherit;
+}
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+h1,
+h2,
+h3 {
+  font-family: var(--titre);
+  font-weight: 600;
+  line-height: 1.08;
+  margin: 0;
+  text-wrap: balance;
+  letter-spacing: -0.01em;
+}
+
+.conteneur {
+  width: 100%;
+  max-width: var(--largeur-max);
+  margin-inline: auto;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+.etiquette {
+  font-family: var(--pixel);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+.pixelise {
+  image-rendering: pixelated;
+}
+
+/* ---------- Navigation ---------- */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  z-index: 60;
+  background: var(--nuit);
+}
+.navigation {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 50;
+  background: rgba(7, 7, 14, 0.84);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--ligne);
+}
+.navigation .conteneur {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-block: 14px;
+}
+.logo {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  text-decoration: none;
+}
+.logo strong {
+  font-family: var(--pixel);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--cyan);
+  text-shadow: 0 0 12px rgba(60, 242, 200, 0.55);
+}
+.logo small {
+  font-size: 12px;
+  color: var(--gris);
+}
+.navigation nav {
+  min-width: 0;
+  max-width: 100%;
+}
+.menu {
+  display: flex;
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.menu a {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gris);
+  white-space: nowrap;
+  transition:
+    color 0.2s,
+    background 0.2s;
+}
+.menu a:hover {
+  color: var(--texte);
+}
+.menu a[aria-current="page"] {
+  color: var(--nuit);
+  background: var(--cyan);
+}
+@media (max-width: 760px) {
+  .navigation .conteneur {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding-block: 12px;
+  }
+  .navigation nav,
+  .menu {
+    width: 100%;
+  }
+  .menu a {
+    padding: 7px 10px;
+    font-size: 13.5px;
+  }
+}
+
+/* ---------- Boutons ---------- */
+.bouton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 22px;
+  border-radius: 10px;
+  border: 1px solid var(--ligne);
+  background: var(--surface);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+.bouton:hover {
+  border-color: var(--cyan);
+}
+.bouton-neon {
+  border-color: var(--cyan);
+  background: rgba(60, 242, 200, 0.12);
+  color: var(--texte);
+  box-shadow:
+    0 0 0 1px rgba(60, 242, 200, 0.25),
+    0 0 24px rgba(60, 242, 200, 0.18);
+}
+.bouton-neon:hover {
+  background: rgba(60, 242, 200, 0.22);
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 0 1px rgba(60, 242, 200, 0.4),
+    0 0 32px rgba(60, 242, 200, 0.3);
+}
+.bouton svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+}
+kbd {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 1px 6px;
+  border: 1px solid var(--ligne);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  font: 600 11px/1.5 var(--corps);
+  color: var(--texte);
+  text-align: center;
+}
+
+/* ---------- Écran façon moniteur cathodique ---------- */
+.ecran {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #000;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 0 0 6px #14152a,
+    0 0 0 7px var(--teinte, var(--cyan)),
+    0 0 30px -4px var(--teinte, var(--cyan));
+}
+.ecran img,
+.ecran canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+}
+.ecran::after {
+  /* léger bombé de l'écran */
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 40%, transparent 60%, rgba(0, 0, 0, 0.35));
+}
+
+/* ---------- Pied de page ---------- */
+.pied {
+  border-top: 1px solid var(--ligne);
+  margin-top: 96px;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.pied .conteneur {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px 32px;
+  padding-block: 28px;
+  font-size: 13px;
+  color: var(--gris);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01s !important;
+    transition-duration: 0.01s !important;
+    scroll-behavior: auto !important;
+  }
+}

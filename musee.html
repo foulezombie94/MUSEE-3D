@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Visite 3D · Musée Continue</title>
+    <meta name="claude:viewport-fit-sides" content="cover" />
+    <meta
+      name="description"
+      content="Visite en 3D du musée du jeu vidéo Continue : quatre salles, vingt-deux expositions et quatre bornes d'arcade jouables directement dans le musée."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Figtree:wght@400;500;600&family=Silkscreen:wght@400;700&display=swap"
+    />
+    <link rel="stylesheet" href="css/commun.css" />
+    <link rel="stylesheet" href="css/musee.css" />
+    <link rel="stylesheet" href="css/minecraft.css" />
+    <link rel="stylesheet" href="css/minecraft-vanilla.css" />
+
+    <!-- Indique au navigateur où trouver Three.js et ses modules complémentaires (copies locales) -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./js/lib/three.module.min.js",
+          "three/addons/": "./js/lib/addons/"
+        }
+      }
+    </script>
+  </head>
+  <body class="page-musee">
+    <canvas id="scene" aria-label="Le musée en 3D"></canvas>
+
+    <!-- Écran de départ -->
+    <section id="accueil" aria-labelledby="titre-accueil">
+      <a class="retour" href="index.html">← Retour au site</a>
+      <div class="accueil-contenu">
+        <div class="etiquette">Musée du jeu vidéo · visite en 3D</div>
+        <h1 id="titre-accueil">CONTINUE<span>?</span></h1>
+        <p class="accroche">
+          Quatre salles, de 1958 à 2011 : vingt-deux moments clés de l'histoire du jeu vidéo, quatre
+          bornes d'arcade jouables et un monde Minecraft à explorer depuis son tableau, en salle 4.
+        </p>
+        <ul class="accueil-chiffres" aria-label="Le musée en chiffres">
+          <li><b>4</b>salles</li>
+          <li><b>22</b>expositions</li>
+          <li><b>4</b>bornes jouables</li>
+        </ul>
+        <div class="chargement" aria-live="polite">
+          <div class="barre"><i id="barre-chargement"></i></div>
+          <div id="texte-chargement">Mise sous tension…</div>
+        </div>
+        <div class="accueil-actions">
+          <button class="bouton bouton-neon bouton-entrer" id="entrer" disabled>
+            Entrer dans le musée
+          </button>
+          <button class="bouton" id="entrer-visite" disabled>Visite guidée</button>
+          <button class="bouton" id="entrer-jeux" disabled>Jouer aux bornes</button>
+        </div>
+        <div class="commandes" id="aide-commandes">
+          <span><kbd>Z</kbd><kbd>Q</kbd><kbd>S</kbd><kbd>D</kbd> <b>marcher</b></span>
+          <span>Souris <b>regarder</b></span>
+          <span>Clic sur un écran <b>lire</b> ou <b>jouer</b></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interface pendant la visite -->
+    <header class="hud" id="hud-haut" hidden>
+      <a class="marque" href="index.html" title="Retour au site"
+        >CONTINUE?<small>← Retour au site</small></a
+      >
+      <div class="salle-actuelle" id="salle-actuelle"></div>
+      <nav class="outils" aria-label="Outils de visite">
+        <button class="btn" id="btn-recherche" title="Rechercher (R)">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-4-4" />
+          </svg>
+          <span class="libelle-long">Expositions</span><kbd>R</kbd>
+        </button>
+        <button class="btn" id="btn-jeux" title="Bornes jouables (J)">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="7" width="18" height="11" rx="4" />
+            <path d="M8 11v3M6.5 12.5h3" />
+            <circle cx="15.5" cy="12" r=".8" />
+            <circle cx="17.5" cy="14" r=".8" />
+          </svg>
+          <span class="libelle-long">Jouer</span><kbd>J</kbd>
+        </button>
+        <button class="btn" id="btn-visite" aria-pressed="false" title="Visite guidée (V)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+          <span class="libelle-long">Visite guidée</span><kbd>V</kbd>
+        </button>
+        <button class="btn btn-icone" id="btn-aide" title="Aide (H)" aria-label="Aide">?</button>
+      </nav>
+    </header>
+    <button class="plan" id="plan-bouton" hidden title="Plan : cliquez sur une salle pour y aller">
+      <canvas id="plan" width="480" height="132" aria-label="Plan du musée"></canvas>
+    </button>
+    <div id="viseur" hidden></div>
+    <div id="indice" hidden></div>
+    <div id="joystick" hidden aria-hidden="true"><i></i></div>
+    <div id="toasts" aria-live="polite"></div>
+
+    <!-- Légende de la visite guidée -->
+    <section id="legende-visite" hidden aria-live="polite">
+      <div class="ligne1">
+        <h3 id="visite-titre"></h3>
+        <span class="num" id="visite-num"></span>
+      </div>
+      <p id="visite-texte"></p>
+      <div class="progression"><i id="visite-progression"></i></div>
+      <div class="actions">
+        <button class="btn" id="visite-fiche">Lire la fiche</button>
+        <button class="btn" id="visite-suivante">Suivante →</button>
+        <button class="btn" id="visite-stop">Arrêter</button>
+      </div>
+    </section>
+
+    <!-- Panneau latéral : expositions et bornes -->
+    <aside id="panneau" aria-labelledby="titre-panneau" aria-hidden="true">
+      <div class="panneau-tete">
+        <h2 id="titre-panneau">Explorer</h2>
+        <button class="fermer" id="fermer-panneau" aria-label="Fermer">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19" /></svg>
+        </button>
+      </div>
+      <div class="onglets" role="tablist">
+        <button
+          role="tab"
+          class="onglet"
+          id="onglet-expos"
+          data-onglet="expos"
+          aria-selected="true"
+        >
+          Expositions
+        </button>
+        <button role="tab" class="onglet" id="onglet-jeux" data-onglet="jeux" aria-selected="false">
+          Bornes jouables
+        </button>
+      </div>
+      <div class="vue-onglet" id="vue-expos">
+        <input
+          id="champ-recherche"
+          type="search"
+          placeholder="Jeu, console, créateur, année…"
+          autocomplete="off"
+          aria-label="Rechercher une exposition"
+        />
+        <div class="puces" id="puces-salles" role="group" aria-label="Filtrer par salle"></div>
+        <div id="nb-resultats"></div>
+        <ul id="resultats" class="liste"></ul>
+      </div>
+      <div class="vue-onglet" id="vue-jeux" hidden>
+        <p class="panneau-intro">
+          Les bornes de la salle 2 se jouent directement dans le musée : la caméra se place devant
+          l'écran.
+        </p>
+        <ul id="liste-jeux" class="liste"></ul>
+      </div>
+    </aside>
+
+    <!-- Fiche d'une exposition -->
+    <section id="fiche" aria-labelledby="fiche-titre" aria-hidden="true">
+      <div class="fiche-image">
+        <div class="ecran" id="fiche-ecran"><img id="fiche-img" alt="" /></div>
+      </div>
+      <div class="fiche-texte">
+        <button class="fermer" id="fermer-fiche" aria-label="Fermer la fiche">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19" /></svg>
+        </button>
+        <div class="etiquette" id="fiche-salle"></div>
+        <h2 id="fiche-titre"></h2>
+        <dl class="cartel">
+          <dt>Date</dt>
+          <dd id="fiche-date"></dd>
+          <dt>Créé par</dt>
+          <dd id="fiche-createur"></dd>
+          <dt>Lieu</dt>
+          <dd id="fiche-lieu"></dd>
+          <dt>Support</dt>
+          <dd id="fiche-support"></dd>
+        </dl>
+        <p id="fiche-texte"></p>
+        <button class="carte-jeu" id="fiche-jouer" hidden></button>
+        <div class="fiche-nav">
+          <button class="btn" id="fiche-prec">← Précédente</button>
+          <button class="btn" id="fiche-suiv">Suivante →</button>
+          <button class="btn btn-neon" id="fiche-aller">Aller devant l'écran</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Aide -->
+    <section
+      id="aide"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="aide-titre"
+      aria-hidden="true"
+    >
+      <div class="aide-boite">
+        <div class="panneau-tete">
+          <h2 id="aide-titre">Commandes</h2>
+          <button class="fermer" id="fermer-aide" aria-label="Fermer">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19" /></svg>
+          </button>
+        </div>
+        <div class="aide-grille">
+          <div>
+            <h3>Se déplacer</h3>
+            <dl>
+              <dt><kbd>Z</kbd><kbd>Q</kbd><kbd>S</kbd><kbd>D</kbd> / flèches</dt>
+              <dd>Marcher</dd>
+              <dt><kbd>Maj</kbd></dt>
+              <dd>Courir</dd>
+              <dt>Souris</dt>
+              <dd>Regarder (cliquez dans la salle)</dd>
+              <dt>Plan</dt>
+              <dd>Cliquez une salle pour y aller</dd>
+            </dl>
+          </div>
+          <div>
+            <h3>Visiter</h3>
+            <dl>
+              <dt>Clic sur un écran</dt>
+              <dd>Lire la fiche ou jouer</dd>
+              <dt><kbd>R</kbd></dt>
+              <dd>Rechercher une exposition</dd>
+              <dt><kbd>J</kbd></dt>
+              <dd>Choisir une borne</dd>
+              <dt><kbd>V</kbd></dt>
+              <dd>Visite guidée</dd>
+            </dl>
+          </div>
+          <div>
+            <h3>Sur une borne</h3>
+            <dl>
+              <dt><kbd>Espace</kbd></dt>
+              <dd>Commencer</dd>
+              <dt><kbd>P</kbd></dt>
+              <dd>Pause</dd>
+              <dt><kbd>F</kbd></dt>
+              <dd>Plein écran</dd>
+              <dt><kbd>Échap</kbd></dt>
+              <dd>Quitter la borne</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Partie en cours sur une borne : interface autour de l'écran 3D -->
+    <div id="hud-partie" hidden>
+      <div class="partie-barre">
+        <button class="btn" id="partie-quitter">← Quitter <kbd>Échap</kbd></button>
+        <div class="partie-nom">
+          <span class="etiquette" id="partie-inspiration"></span><strong id="partie-titre"></strong>
+        </div>
+        <div class="partie-outils">
+          <button class="btn btn-icone" id="partie-son" title="Couper le son" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 9v6h4l5 4V5L8 9z" />
+              <path class="ondes" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11" />
+            </svg>
+          </button>
+          <button class="btn btn-icone" id="partie-pause" title="Pause (P)" aria-label="Pause">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14" /></svg>
+          </button>
+          <button class="btn" id="partie-plein" title="Plein écran (F)">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" /></svg
+            ><span class="libelle-long">Plein écran</span>
+          </button>
+        </div>
+      </div>
+      <p class="partie-aide">
+        <span id="partie-regle"></span> <span class="partie-touches" id="partie-touches"></span>
+      </p>
+    </div>
+    <section id="partie-plein-ecran" aria-label="Jeu en plein écran" hidden>
+      <div class="ecran" id="partie-ecran"></div>
+    </section>
+    <!-- Manette tactile pendant une partie -->
+    <div id="manette" hidden>
+      <div class="croix">
+        <button data-code="ArrowUp" aria-label="Haut">▲</button>
+        <button data-code="ArrowLeft" aria-label="Gauche">◀</button>
+        <button data-code="ArrowRight" aria-label="Droite">▶</button>
+        <button data-code="ArrowDown" aria-label="Bas">▼</button>
+      </div>
+      <button class="start" data-code="Space">START</button>
+    </div>
+
+    <script type="module" src="js/musee/main.js"></script>
+  </body>
+</html>

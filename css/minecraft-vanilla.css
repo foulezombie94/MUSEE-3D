@@ -1,0 +1,945 @@
+@font-face {
+  font-family: Minecraft;
+  src: url("../assets/minecraft/minecraft.woff2") format("woff2");
+  font-display: swap;
+}
+.mc-root {
+  --gui: 2;
+  --igui: 3;
+  font-family: Minecraft, monospace;
+  font-weight: normal;
+  font-size: 16px;
+}
+.mc-root button,
+.mc-root kbd,
+.mc-root input {
+  font-family: Minecraft, monospace;
+  font-weight: normal;
+}
+.mc-root button {
+  font-size: 16px;
+  line-height: 1.25;
+}
+.mc-root kbd {
+  font-size: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  box-shadow: none;
+}
+.mc-root button:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 0;
+}
+.mc-root .mc-top {
+  top: 6px;
+  left: 7px;
+  right: 7px;
+}
+.mc-brand {
+  display: none;
+}
+.mc-top-actions {
+  margin-left: auto;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.mc-top-actions:focus-within,
+.mc-top-actions:hover {
+  opacity: 1;
+}
+.mc-root.mc-is-touch .mc-top-actions {
+  opacity: 0.85;
+}
+.mc-root .mc-small {
+  background: #666;
+  border: 2px solid #111;
+  box-shadow:
+    inset 2px 2px #aaa,
+    inset -2px -2px #333;
+  padding: 8px 12px;
+  text-shadow: 2px 2px #333;
+}
+.mc-root .mc-cross {
+  width: 30px;
+  height: 30px;
+  background: url("../assets/minecraft/gui/crosshair.png") center/30px 30px no-repeat;
+  image-rendering: pixelated;
+  filter: none;
+  mix-blend-mode: difference;
+}
+.mc-cross:before,
+.mc-cross:after {
+  display: none;
+}
+.mc-root .mc-target,
+.mc-root .mc-mine,
+.mc-root .mc-hint,
+.mc-root .mc-controls {
+  display: none !important;
+}
+.mc-root .mc-toast {
+  top: 30px;
+  padding: 10px 16px;
+  background: #191919df;
+  border: 2px solid #777;
+  box-shadow:
+    inset 1px 1px #ccc,
+    3px 3px #0008;
+  letter-spacing: 0;
+  line-height: 1.4;
+  font-size: 14px;
+  text-shadow: 2px 2px #333;
+}
+.mc-root .mc-bottom {
+  bottom: max(0px, env(safe-area-inset-bottom));
+  width: calc(182px * var(--gui));
+  height: calc(22px * var(--gui));
+  text-shadow: 2px 2px #333;
+}
+.mc-root .mc-hotbar {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(9, calc(20px * var(--gui)));
+  gap: 0;
+  width: 100%;
+  height: 100%;
+  padding: calc(1px * var(--gui));
+  background: url("../assets/minecraft/gui/hotbar.png") 0 0/100% 100% no-repeat;
+  image-rendering: pixelated;
+  border: 0;
+  box-shadow: none;
+}
+.mc-root .mc-hotbar .mc-slot {
+  width: calc(20px * var(--gui));
+  height: calc(20px * var(--gui));
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  padding: 0;
+  outline: 0;
+}
+.mc-root .mc-hotbar .mc-slot[aria-pressed="true"]:before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  left: calc(-2px * var(--gui));
+  top: calc(-2px * var(--gui));
+  width: calc(24px * var(--gui));
+  height: calc(23px * var(--gui));
+  background: url("../assets/minecraft/gui/hotbar_selection.png") center/100% 100%;
+  pointer-events: none;
+  image-rendering: pixelated;
+}
+.mc-root .mc-slot img {
+  width: calc(16px * var(--gui));
+  height: calc(16px * var(--gui));
+  filter: none;
+  object-fit: contain;
+}
+.mc-root .mc-slot kbd {
+  display: none;
+}
+.mc-root .mc-slot small {
+  font-family: Minecraft, monospace;
+  font-size: calc(8px * var(--gui));
+  bottom: calc(1px * var(--gui));
+  right: calc(1px * var(--gui));
+  line-height: 1;
+  text-shadow: 2px 2px #333;
+  z-index: 3;
+}
+.mc-root .mc-item-name {
+  position: absolute;
+  bottom: calc(46px * var(--gui));
+  width: 100%;
+  height: auto;
+  font-size: calc(8px * var(--gui));
+  line-height: 1.4;
+  letter-spacing: 0;
+  color: #fff;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.mc-root .mc-item-name.visible {
+  opacity: 1;
+}
+.mc-root .mc-vitals {
+  position: absolute;
+  bottom: calc(32px * var(--gui));
+  width: 100%;
+  padding: 0;
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  height: calc(9px * var(--gui));
+  line-height: 1;
+  font-size: 0;
+}
+.mc-hearts,
+.mc-food {
+  display: flex;
+  gap: 0;
+  letter-spacing: 0;
+}
+.mc-heart,
+.mc-drumstick {
+  display: inline-block;
+  position: relative;
+  width: calc(8px * var(--gui));
+  height: calc(9px * var(--gui));
+  background-size: calc(9px * var(--gui)) calc(9px * var(--gui));
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+}
+.mc-heart {
+  background-image: url("../assets/minecraft/gui/heart_container.png");
+}
+.mc-heart i,
+.mc-drumstick i {
+  position: absolute;
+  inset: 0;
+  background-size: calc(9px * var(--gui)) calc(9px * var(--gui));
+  background-repeat: no-repeat;
+}
+.mc-heart.full i {
+  background-image: url("../assets/minecraft/gui/heart_full.png");
+}
+.mc-heart.half i {
+  background-image: url("../assets/minecraft/gui/heart_half.png");
+}
+.mc-drumstick {
+  background-image: url("../assets/minecraft/gui/food_empty.png");
+}
+.mc-drumstick.full i {
+  background-image: url("../assets/minecraft/gui/food_full.png");
+}
+.mc-drumstick.half i {
+  background-image: url("../assets/minecraft/gui/food_half.png");
+}
+.mc-experience {
+  position: absolute;
+  bottom: calc(25px * var(--gui));
+  width: 100%;
+  height: calc(5px * var(--gui));
+  background: url("../assets/minecraft/gui/experience_bar_background.png") 0 0/100% 100%;
+  image-rendering: pixelated;
+}
+.mc-experience i {
+  position: absolute;
+  inset: 0;
+  background: url("../assets/minecraft/gui/experience_bar_progress.png") 0 0 /
+    calc(182px * var(--gui)) 100%;
+  width: 0;
+}
+.mc-experience span {
+  position: absolute;
+  bottom: calc(3px * var(--gui));
+  left: 0;
+  right: 0;
+  font-size: calc(8px * var(--gui));
+  color: #80ff20;
+  text-shadow: 2px 2px #183d00;
+}
+.mc-debug {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  line-height: 1.5;
+  white-space: pre-line;
+  font-size: 14px;
+  text-shadow: 2px 2px #333;
+  background: #0005;
+  padding: 0 3px;
+  pointer-events: none;
+}
+.mc-root .mc-overlay {
+  background: #0008;
+  backdrop-filter: none;
+  padding: 24px 12px;
+}
+.mc-root .mc-card {
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  padding: 0;
+  width: min(400px, 92vw);
+  max-height: none;
+  text-shadow: 2px 2px #333;
+}
+.mc-root .mc-card h2 {
+  font:
+    normal 22px Minecraft,
+    monospace;
+  color: white;
+  margin: 0 0 30px;
+  letter-spacing: 0;
+}
+.mc-root .mc-card p {
+  font-family: Minecraft, monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #fff;
+  letter-spacing: 0;
+}
+.mc-root .mc-main-button,
+.mc-root .mc-mode {
+  font:
+    normal 16px Minecraft,
+    monospace !important;
+  text-shadow: 2px 2px #333 !important;
+  color: #eee !important;
+  border: 2px solid #111;
+  background-color: #777;
+  background-image: url("../assets/minecraft/gui/button.png");
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+  box-shadow: none;
+  padding: 12px 8px;
+  margin: 5px 0;
+  min-height: 40px;
+  border: 0;
+  line-height: 1.2;
+}
+.mc-root .mc-main-button:hover,
+.mc-root .mc-mode:hover {
+  background-image: url("../assets/minecraft/gui/button_highlighted.png");
+  color: #ffffa0 !important;
+}
+.mc-root .mc-main-button:disabled {
+  background-image: url("../assets/minecraft/gui/button_disabled.png");
+  color: #999 !important;
+}
+.mc-root .mc-mode[aria-pressed="true"] {
+  outline: 2px solid #eee;
+  outline-offset: -2px;
+}
+.mc-root .mc-mode span {
+  font-family: Minecraft, monospace;
+  color: #ddd;
+  font-size: 11px;
+  margin-top: 6px;
+}
+.mc-root .mc-modes {
+  gap: 8px;
+  margin: 24px 0 10px;
+}
+.mc-root .mc-title-image {
+  display: block;
+  width: min(510px, 86vw);
+  image-rendering: pixelated;
+  margin: 0 auto 7px;
+}
+.mc-title-wrap {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  margin-bottom: 55px;
+}
+.mc-splash {
+  position: absolute;
+  right: -20px;
+  bottom: -15px;
+  transform: rotate(-18deg);
+  font-size: 20px;
+  color: #ffff00;
+  text-shadow: 2px 2px #444;
+  white-space: nowrap;
+  animation: mc-splash 1s ease-in-out infinite alternate;
+}
+.mc-edition {
+  width: 160px;
+  margin: auto;
+  display: block;
+  image-rendering: pixelated;
+}
+.mc-root .mc-note {
+  font-family: Minecraft, monospace;
+  font-size: 11px !important;
+  color: #bbb !important;
+  line-height: 1.5;
+}
+.mc-root .mc-link-button {
+  font-family: Minecraft, monospace;
+  font-size: 13px !important;
+  color: #ddd !important;
+  text-shadow: 2px 2px #333;
+}
+.mc-root .mc-eyebrow {
+  font-family: Minecraft, monospace;
+  letter-spacing: 0;
+  color: #fff;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+.mc-root .mc-subtitle {
+  font-family: Minecraft, monospace;
+  color: #fff;
+  font-size: 16px;
+  letter-spacing: 0;
+}
+.mc-root .mc-pause-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  margin: 12px 0;
+}
+.mc-root .mc-pause-grid .mc-main-button {
+  margin: 0;
+  font-size: 14px !important;
+}
+.mc-root .mc-inventory-card {
+  width: calc(195px * var(--igui));
+  height: calc(136px * var(--igui));
+  background: url("../assets/minecraft/gui/tab_items.png") 0 0 / calc(256px * var(--igui))
+    calc(256px * var(--igui)) no-repeat;
+  image-rendering: pixelated;
+  text-align: left;
+  padding: 0;
+  color: #404040;
+  text-shadow: none;
+  position: relative;
+  margin: auto;
+  flex-shrink: 0;
+}
+.mc-inv-heading {
+  position: absolute;
+  left: calc(8px * var(--igui));
+  top: calc(6px * var(--igui));
+  font-size: calc(7px * var(--igui));
+  color: #404040;
+  line-height: 1;
+}
+.mc-inv-close {
+  position: absolute;
+  right: calc(4px * var(--igui));
+  top: calc(3px * var(--igui));
+  font-size: calc(8px * var(--igui)) !important;
+  width: calc(10px * var(--igui));
+  height: calc(11px * var(--igui));
+  padding: 0;
+  background: none;
+  border: 0;
+  color: #555 !important;
+  line-height: 1 !important;
+}
+.mc-inv-close:hover {
+  color: #fff !important;
+}
+.mc-root .mc-inv-grid {
+  position: absolute;
+  left: calc(9px * var(--igui));
+  top: calc(18px * var(--igui));
+  width: calc(162px * var(--igui));
+  height: calc(90px * var(--igui));
+  display: grid;
+  grid-template-columns: repeat(9, calc(18px * var(--igui)));
+  grid-auto-rows: calc(18px * var(--igui));
+  gap: 0;
+  margin: 0;
+  overflow: auto;
+  scrollbar-width: none;
+  align-content: start;
+}
+.mc-root .mc-inv-grid::-webkit-scrollbar {
+  display: none;
+}
+.mc-root .mc-inv-grid .mc-slot,
+.mc-root .mc-inventory-bar .mc-slot,
+.mc-root .mc-craft-cell {
+  width: calc(18px * var(--igui));
+  height: calc(18px * var(--igui));
+  border: 0;
+  outline: 0;
+  box-shadow: none;
+  background: transparent;
+  padding: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+.mc-root .mc-inv-grid .mc-slot:hover,
+.mc-root .mc-inventory-bar .mc-slot:hover,
+.mc-root .mc-craft-cell:hover {
+  background: #fff6;
+}
+.mc-root .mc-inv-grid .mc-slot img,
+.mc-root .mc-inventory-bar .mc-slot img,
+.mc-root .mc-craft-cell img {
+  width: calc(16px * var(--igui));
+  height: calc(16px * var(--igui));
+  filter: none;
+}
+.mc-root .mc-inv-grid .mc-slot small,
+.mc-root .mc-inventory-bar .mc-slot small {
+  font-size: calc(7px * var(--igui));
+  right: 0;
+  bottom: 0;
+  color: #fff;
+  text-shadow: 2px 2px #333;
+}
+.mc-root .mc-inventory-bar {
+  position: absolute;
+  left: calc(9px * var(--igui));
+  top: calc(112px * var(--igui));
+  display: flex;
+  width: calc(162px * var(--igui));
+  gap: 0;
+}
+.mc-inv-tabs {
+  position: absolute;
+  left: 0;
+  top: calc(-27px * var(--igui));
+  display: flex;
+  gap: calc(1px * var(--igui));
+}
+.mc-inv-tabs button {
+  width: calc(28px * var(--igui));
+  height: calc(28px * var(--igui));
+  border: calc(1px * var(--igui)) solid #373737;
+  box-shadow:
+    inset 2px 2px #fff,
+    inset -2px -2px #555;
+  background: #aaa;
+  image-rendering: pixelated;
+  padding: 7px;
+}
+.mc-inv-tabs button[aria-pressed="true"] {
+  background: #c6c6c6;
+  border-bottom-color: #c6c6c6;
+  transform: translateY(2px);
+}
+.mc-inv-tabs img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.mc-inv-tip {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #ddd;
+  font-size: 12px;
+  line-height: 1.5;
+  text-shadow: 2px 2px #333;
+}
+.mc-scrollbar {
+  position: absolute;
+  left: calc(174px * var(--igui));
+  top: calc(18px * var(--igui));
+  width: calc(12px * var(--igui));
+  height: calc(88px * var(--igui));
+  background: #333;
+}
+.mc-scrollbar i {
+  display: block;
+  width: 100%;
+  height: calc(18px * var(--igui));
+  background: #aaa;
+  box-shadow:
+    inset 2px 2px #eee,
+    inset -2px -2px #555;
+}
+.mc-root .mc-survival-inventory {
+  width: calc(176px * var(--igui));
+  height: calc(166px * var(--igui));
+  background-image: url("../assets/minecraft/gui/inventory.png");
+}
+.mc-survival-inventory .mc-inv-heading {
+  left: calc(97px * var(--igui));
+  top: calc(6px * var(--igui));
+}
+.mc-root .mc-survival-inventory .mc-inv-grid {
+  left: calc(8px * var(--igui));
+  top: calc(84px * var(--igui));
+  height: calc(54px * var(--igui));
+}
+.mc-root .mc-survival-inventory .mc-inventory-bar {
+  left: calc(8px * var(--igui));
+  top: calc(142px * var(--igui));
+}
+.mc-player-preview {
+  position: absolute;
+  left: calc(35px * var(--igui));
+  top: calc(13px * var(--igui));
+  width: calc(28px * var(--igui));
+  height: calc(53px * var(--igui));
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.mc-tool-preview {
+  position: absolute;
+  left: calc(8px * var(--igui));
+  top: calc(8px * var(--igui));
+  width: calc(16px * var(--igui));
+  height: calc(16px * var(--igui));
+  image-rendering: pixelated;
+}
+.mc-craft-grid {
+  position: absolute;
+  left: calc(98px * var(--igui));
+  top: calc(18px * var(--igui));
+  display: grid;
+  grid-template-columns: repeat(2, calc(18px * var(--igui)));
+  grid-template-rows: repeat(2, calc(18px * var(--igui)));
+}
+.mc-craft-output {
+  position: absolute !important;
+  left: calc(154px * var(--igui));
+  top: calc(28px * var(--igui));
+}
+.mc-recipe-toggle {
+  position: absolute;
+  left: calc(98px * var(--igui));
+  top: calc(60px * var(--igui));
+  padding: 3px 5px;
+  font-size: calc(6px * var(--igui)) !important;
+  background: #6d7658;
+  border: 1px solid #333;
+  color: white !important;
+  text-shadow: 1px 1px #333;
+}
+.mc-recipe-panel {
+  position: absolute;
+  width: calc(160px * var(--igui));
+  right: calc(100% + 10px);
+  top: 0;
+  background: #c6c6c6;
+  padding: 14px;
+  border: 3px solid #333;
+  box-shadow: inset 2px 2px #fff;
+  max-height: calc(166px * var(--igui));
+  overflow: auto;
+  color: #333;
+  text-shadow: none;
+}
+.mc-recipe-panel h3 {
+  font: normal 18px Minecraft;
+  margin: 0 0 12px;
+}
+.mc-root .mc-recipe {
+  display: flex;
+  border-top: 1px solid #999;
+  padding: 8px 0;
+  gap: 7px;
+  font-size: 12px;
+}
+.mc-root .mc-recipe span {
+  font: normal 10px Minecraft;
+  color: #555;
+}
+.mc-root .mc-recipe button {
+  font: normal 12px Minecraft;
+  color: white;
+  padding: 6px;
+  background: #777;
+  border: 1px solid #333;
+  box-shadow: inset 1px 1px #ccc;
+}
+.mc-root .mc-touch button {
+  font-family: Minecraft, monospace;
+}
+.mc-root .mc-pad,
+.mc-root .mc-touch-actions {
+  bottom: 100px;
+}
+.mc-root .mc-damage {
+  transition: opacity 0.2s;
+}
+.mc-options-label {
+  display: block;
+  margin: 16px 0 8px;
+  font-family: Minecraft;
+  color: #eee;
+  font-size: 14px;
+  text-shadow: 2px 2px #333;
+}
+.mc-options-label input {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  accent-color: #aaa;
+}
+.mc-root.mc-hide-hud .mc-top,
+.mc-root.mc-hide-hud .mc-bottom,
+.mc-root.mc-hide-hud .mc-cross,
+.mc-root.mc-hide-hud .mc-debug {
+  display: none !important;
+}
+@keyframes mc-splash {
+  from {
+    scale: 1;
+  }
+  to {
+    scale: 1.05;
+  }
+}
+.mc-root .mc-book-open {
+  transform: translateX(calc(80px * var(--igui)));
+}
+@media (max-width: 1100px) {
+  .mc-root .mc-book-open {
+    transform: none;
+  }
+  .mc-root .mc-recipe-panel {
+    right: 0;
+    top: calc(100% + 65px);
+    width: 100%;
+    max-height: 300px;
+  }
+}
+.mc-root .mc-workbench-inventory {
+  background-image: url("../assets/minecraft/gui/crafting_table.png");
+}
+.mc-root .mc-workbench-inventory .mc-inv-heading {
+  left: calc(28px * var(--igui));
+  top: calc(6px * var(--igui));
+}
+.mc-root .mc-workbench-inventory .mc-craft-grid {
+  left: calc(30px * var(--igui));
+  top: calc(17px * var(--igui));
+  grid-template-columns: repeat(3, calc(18px * var(--igui)));
+  grid-template-rows: repeat(3, calc(18px * var(--igui)));
+}
+.mc-root .mc-workbench-inventory .mc-craft-output {
+  left: calc(124px * var(--igui));
+  top: calc(35px * var(--igui));
+}
+.mc-root .mc-workbench-inventory .mc-recipe-toggle {
+  left: calc(5px * var(--igui));
+  top: calc(36px * var(--igui));
+  writing-mode: vertical-rl;
+  font-size: calc(5px * var(--igui)) !important;
+  padding: 2px;
+}
+.mc-root .mc-craft-cell small {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  font: normal calc(7px * var(--igui)) Minecraft;
+  color: white;
+  text-shadow: 2px 2px #333;
+  line-height: 1;
+}
+.mc-held-stack {
+  position: fixed;
+  z-index: 2009;
+  pointer-events: none;
+  width: calc(16px * var(--igui));
+  height: calc(16px * var(--igui));
+  transform: translate(-50%, -50%);
+  image-rendering: pixelated;
+}
+.mc-held-stack img {
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+.mc-held-stack small {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  font: normal calc(7px * var(--igui)) Minecraft;
+  color: white;
+  text-shadow: 2px 2px #333;
+}
+.mc-inv-tooltip {
+  position: fixed;
+  z-index: 2010;
+  pointer-events: none;
+  max-width: 220px;
+  padding: 7px 10px;
+  background: #100010f5;
+  border: 2px solid #270963;
+  box-shadow: inset 0 0 0 1px #5000a0;
+  font: normal 15px Minecraft;
+  color: white;
+  text-shadow: 2px 2px #333;
+}
+.mc-root .mc-slot-drag {
+  background: #ffffff99 !important;
+}
+.mc-root .mc-slot,
+.mc-root .mc-craft-cell {
+  touch-action: none;
+  user-select: none;
+}
+.mc-root .mc-recipe-entry {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin: 3px 0;
+  padding: 5px;
+  color: #333;
+  background: #aaa;
+  border: 1px solid #666;
+  box-shadow: inset 1px 1px #eee;
+  font: normal 12px Minecraft;
+  text-align: left;
+}
+.mc-recipe-entry img {
+  width: 30px;
+  height: 30px;
+  image-rendering: pixelated;
+}
+.mc-recipe-entry:hover {
+  background: #c8c8c8;
+}
+.mc-palette-back {
+  position: absolute;
+  left: calc(8px * var(--igui));
+  top: calc(73px * var(--igui));
+  background: none;
+  color: #555 !important;
+  border: 0;
+  padding: 0;
+  font-size: calc(6px * var(--igui)) !important;
+}
+@media (min-height: 900px) {
+  .mc-root {
+    --gui: 3;
+  }
+}
+@media (max-width: 700px) {
+  .mc-root {
+    --igui: 2;
+  }
+  .mc-root .mc-small {
+    font-size: 12px !important;
+    padding: 7px;
+  }
+  .mc-root .mc-inventory-card {
+    margin: auto;
+  }
+  .mc-recipe-panel {
+    right: 0;
+    top: calc(100% + 40px);
+    width: 100%;
+    max-height: none;
+  }
+  .mc-title-wrap {
+    margin-bottom: 32px;
+  }
+  .mc-splash {
+    right: 10px;
+    font-size: 14px;
+  }
+  .mc-root .mc-toast {
+    font-size: 11px;
+    top: 50px;
+  }
+  .mc-root .mc-card h2 {
+    font-size: 20px;
+  }
+}
+@media (max-height: 550px) {
+  .mc-root {
+    --igui: 2;
+  }
+  .mc-root .mc-overlay {
+    padding: 60px 12px;
+  }
+  .mc-root .mc-card {
+    margin: auto;
+  }
+  .mc-title-wrap {
+    margin-bottom: 20px;
+  }
+  .mc-title-image {
+    max-width: 300px;
+  }
+  .mc-root .mc-main-button {
+    padding: 9px 6px;
+    min-height: 32px;
+  }
+  .mc-root .mc-modes {
+    margin: 8px 0;
+  }
+  .mc-root .mc-card p {
+    margin: 5px 0;
+  }
+  .mc-root .mc-card h2 {
+    margin-bottom: 14px;
+  }
+  .mc-root .mc-inventory-card {
+    flex-shrink: 0;
+    margin: auto;
+  }
+  .mc-root .mc-note {
+    font-size: 9px !important;
+  }
+  .mc-root .mc-pause-grid {
+    margin: 6px 0;
+  }
+}
+
+/* Les coordonnées désignent le cadre de 18 pixels ; l'objet occupe les 16 pixels intérieurs. */
+.mc-root .mc-inv-grid {
+  left: calc(8px * var(--igui));
+  top: calc(17px * var(--igui));
+}
+.mc-root .mc-inventory-bar {
+  left: calc(8px * var(--igui));
+  top: calc(111px * var(--igui));
+}
+.mc-root .mc-survival-inventory .mc-inv-grid {
+  left: calc(7px * var(--igui));
+  top: calc(83px * var(--igui));
+}
+.mc-root .mc-survival-inventory .mc-inventory-bar {
+  left: calc(7px * var(--igui));
+  top: calc(141px * var(--igui));
+}
+.mc-root .mc-craft-grid {
+  left: calc(97px * var(--igui));
+  top: calc(17px * var(--igui));
+}
+.mc-root .mc-craft-output {
+  left: calc(153px * var(--igui));
+  top: calc(27px * var(--igui));
+}
+.mc-root .mc-workbench-inventory .mc-craft-grid {
+  left: calc(29px * var(--igui));
+  top: calc(16px * var(--igui));
+}
+.mc-root .mc-workbench-inventory .mc-craft-output {
+  left: calc(123px * var(--igui));
+  top: calc(34px * var(--igui));
+}
+.mc-root .mc-inv-grid .mc-slot,
+.mc-root .mc-inventory-bar .mc-slot,
+.mc-root .mc-craft-cell {
+  flex: 0 0 calc(18px * var(--igui));
+  margin: 0;
+  line-height: 0;
+}
+.mc-root .mc-inv-grid .mc-slot img,
+.mc-root .mc-inventory-bar .mc-slot img,
+.mc-root .mc-craft-cell img {
+  position: absolute;
+  left: calc(1px * var(--igui));
+  top: calc(1px * var(--igui));
+  width: calc(16px * var(--igui));
+  height: calc(16px * var(--igui));
+  margin: 0;
+  display: block;
+}
+.mc-root .mc-inv-grid .mc-slot small,
+.mc-root .mc-inventory-bar .mc-slot small,
+.mc-root .mc-craft-cell small {
+  position: absolute;
+  right: 0;
+  bottom: calc(-1px * var(--igui));
+  font: normal calc(10px * var(--igui)) / 1 Minecraft;
+  white-space: nowrap;
+  pointer-events: none;
+}
