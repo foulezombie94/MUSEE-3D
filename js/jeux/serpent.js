@@ -141,7 +141,8 @@ export class Serpent extends JeuArcade {
       if (this.mort <= 0) this.terminer();
       return;
     }
-    const delai = Math.max(0.055, 0.13 - this.corps.length * 0.002); // le serpent accélère en grandissant
+    // Le serpent accélère en grandissant, mais doucement, pour rester maniable
+    const delai = Math.max(0.075, 0.15 - this.corps.length * 0.0015);
     this.chrono += dt;
     if (this.chrono < delai) return;
     this.chrono = 0;

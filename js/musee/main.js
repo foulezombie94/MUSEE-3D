@@ -628,22 +628,15 @@ function poseJeu(b) {
 
 /* ---------- Joystick et boutons de la borne, à la souris ou au doigt ----------
    - Survol : la main s'ouvre sur le joystick, le doigt pointe sur un bouton.
-   - Joystick : on attrape la boule et on la tire ; le manche suit le geste
-     en continu, et la direction (8 positions, comme une vraie grille) se
-     déclenche dès qu'on sort de la petite zone morte du centre.
+   - Joystick : on attrape la boule et on la tire ; le manche suit le geste.
+     Comme sur les bornes de labyrinthe et de serpent de l'époque, la grille
+     n'a que 4 directions : jamais deux directions à la fois, donc jamais de
+     double virage involontaire. La direction se déclenche hors de la petite
+     zone morte du centre.
    - Boutons : ils restent enfoncés tant qu'on appuie. */
 const JOY_PLEIN = 48; // pixels de glissement pour pencher le manche jusqu'en butée
-const JOY_MORT = 13; // zone morte au centre, en pixels
-const SECTEURS = [
-  ["ArrowRight"],
-  ["ArrowRight", "ArrowUp"],
-  ["ArrowUp"],
-  ["ArrowUp", "ArrowLeft"],
-  ["ArrowLeft"],
-  ["ArrowLeft", "ArrowDown"],
-  ["ArrowDown"],
-  ["ArrowDown", "ArrowRight"],
-];
+const JOY_MORT = 12; // zone morte au centre, en pixels
+const SECTEURS = [["ArrowRight"], ["ArrowUp"], ["ArrowLeft"], ["ArrowDown"]];
 const commande3D = { bouton: null, joystick: null, directions: new Set(), id: null };
 function relacherCommande3D() {
   const b = partie.borne;
@@ -735,13 +728,17 @@ canvas.addEventListener("pointermove", (e) => {
     dx = e.clientX - j.x;
     dy = e.clientY - j.y;
   }
-  // Le manche suit le geste en continu…
+  // Le manche suit le geste, guidé par la grille en croix (l'axe secondaire est presque bloqué)…
   const borne = (v) => THREE.MathUtils.clamp(v / JOY_PLEIN, -1, 1);
-  b.joyManuel = { ax: -borne(dx) * 0.33, az: borne(dy) * 0.33 };
-  // … et la direction se déclenche hors de la zone morte, sur 8 positions
+  const horizontal = Math.abs(dx) >= Math.abs(dy);
+  b.joyManuel = {
+    ax: -borne(dx) * 0.33 * (horizontal ? 1 : 0.15),
+    az: borne(dy) * 0.33 * (horizontal ? 0.15 : 1),
+  };
+  // … et la direction se déclenche hors de la zone morte, sur 4 positions
   if (Math.hypot(dx, dy) < JOY_MORT) changerDirections(b, []);
   else {
-    const secteur = (Math.round(Math.atan2(-dy, dx) / (Math.PI / 4)) + 8) % 8;
+    const secteur = (Math.round(Math.atan2(-dy, dx) / (Math.PI / 2)) + 4) % 4;
     changerDirections(b, SECTEURS[secteur]);
   }
 });
