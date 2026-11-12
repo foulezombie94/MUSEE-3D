@@ -1,12 +1,13 @@
 /* ============================================================
    CONTINUE ? — Les consoles jouables
-   - données des six consoles exposées au centre des salles 3 et 4
+   - données des sept consoles exposées dans les salles 3 et 4
    - écrans dessinés par le code : écran d'attente (la télé du musée)
      et séquence de démarrage (quand on lance le jeu)
    - habillage du lecteur : télé de l'époque autour de l'écran et
      manette de la console, dont les boutons sont cliquables
    Les logos et marques déposées ne sont pas reproduits.
    ============================================================ */
+import { dessinerMenuPs4, dessinerDemarragePs4, TUILES } from "./ps4.js";
 
 export const CONSOLES = [
   {
@@ -69,11 +70,24 @@ export const CONSOLES = [
     tele: "plat",
     duree: 4.2,
   },
+  {
+    // Pas de tableau associé : le poste est adossé au mur du fond de la salle 4
+    id: "ps4",
+    expo: null,
+    place: "fond",
+    nom: "PlayStation 4",
+    annee: 2013,
+    jeu: "ps4",
+    salle: "moderne",
+    tele: "plat",
+    duree: 4.2,
+  },
 ];
 export const infoConsole = (id) => CONSOLES.find((c) => c.id === id);
 export const consoleDuJeu = (jeu) => CONSOLES.find((c) => c.jeu === jeu);
-/** Taille logique de l'écran : 4/3, sauf la Wii en 16/9 */
-export const tailleEcran = (id) => (id === "wii" ? [427, 240] : [320, 240]);
+/** Taille logique de l'écran : 4/3, sauf la Wii (16/9) et la PS4 (16/9, haute définition) */
+export const tailleEcran = (id) =>
+  id === "ps4" ? [640, 360] : id === "wii" ? [427, 240] : [320, 240];
 
 const POLICE = "'Silkscreen', 'Courier New', monospace";
 const texte = (g, t, x, y, taille, couleur, align = "center") => {
@@ -187,7 +201,8 @@ function attenteMegadrive(g, w, h, t) {
   g.fillStyle = "#3c6cfc";
   g.fillRect(0, h * 0.58, w, h * 0.12);
   g.fillStyle = "#b4d8fc";
-  for (let x = 0; x < w; x += 24) g.fillRect(boucle(x - t * 30, w), h * 0.6 + ((x / 24) % 3) * 6, 10, 2);
+  for (let x = 0; x < w; x += 24)
+    g.fillRect(boucle(x - t * 30, w), h * 0.6 + ((x / 24) % 3) * 6, 10, 2);
   // Collines en damier
   const d = t * 120;
   for (let i = -1; i < 4; i++) {
@@ -210,7 +225,7 @@ function attenteMegadrive(g, w, h, t) {
   // Sol
   for (let x = -16; x < w + 16; x += 16) {
     const xx = x - boucle(d, 16);
-    g.fillStyle = (Math.floor((x + boucle(d, 32)) / 16) % 2 ? "#b45c1c" : "#e48c3c");
+    g.fillStyle = Math.floor((x + boucle(d, 32)) / 16) % 2 ? "#b45c1c" : "#e48c3c";
     g.fillRect(xx, h - 40, 16, 40);
   }
   g.fillStyle = "#3cbc3c";
@@ -239,7 +254,8 @@ function attentePlaystation(g, w, h, t) {
   g.fillStyle = "#2c1f4a";
   g.beginPath();
   g.moveTo(0, horizon);
-  for (let x = 0; x <= w; x += 20) g.lineTo(x, horizon - 18 - Math.abs(Math.sin(x * 0.03 + 1)) * 26);
+  for (let x = 0; x <= w; x += 20)
+    g.lineTo(x, horizon - 18 - Math.abs(Math.sin(x * 0.03 + 1)) * 26);
   g.lineTo(w, horizon);
   g.fill();
   g.fillStyle = "#2f6b2f";
@@ -248,7 +264,7 @@ function attentePlaystation(g, w, h, t) {
   for (let y = horizon; y < h; y += 2) {
     const p = (y - horizon) / (h - horizon);
     const demi = 12 + p * w * 0.55,
-      bande = Math.floor(1 / (p + 0.05) * 2 + t * 14) % 2;
+      bande = Math.floor((1 / (p + 0.05)) * 2 + t * 14) % 2;
     g.fillStyle = bande ? "#5a5a62" : "#55555c";
     g.fillRect(w / 2 - demi, y, demi * 2, 2);
     g.fillStyle = bande ? "#e8e8e8" : "#d03030";
@@ -463,8 +479,21 @@ function menuWii(g, w, h, t, { pointeur = null, choisi = false } = {}) {
 function attenteWii(g, w, h, t) {
   const p = (t % 6) / 6;
   menuWii(g, w, h, t, {
-    pointeur: [w * (0.5 + Math.sin(p * Math.PI * 2) * 0.32), h * (0.35 + Math.cos(p * Math.PI * 4) * 0.12)],
+    pointeur: [
+      w * (0.5 + Math.sin(p * Math.PI * 2) * 0.32),
+      h * (0.35 + Math.cos(p * Math.PI * 4) * 0.12),
+    ],
   });
+}
+/** L'accueil de la PS4 : la sélection parcourt lentement la rangée de contenus */
+function attentePs4(g, w, h, t) {
+  const n = TUILES.length,
+    pas = (((t / 3.2) % (2 * n - 2)) + 2 * n - 2) % (2 * n - 2),
+    etape = Math.floor(pas),
+    aller = (k) => (k < n ? k : 2 * n - 2 - k),
+    p = Math.min(1, (pas - etape) * 4),
+    defil = aller(etape) + (aller((etape + 1) % (2 * n - 2)) - aller(etape)) * p * p * (3 - 2 * p);
+  dessinerMenuPs4(g, w, h, t, { tuile: Math.round(defil), defil });
 }
 const ATTENTES = {
   nes: attenteNes,
@@ -473,6 +502,7 @@ const ATTENTES = {
   playstation: attentePlaystation,
   n64: attenteN64,
   wii: attenteWii,
+  ps4: attentePs4,
 };
 /** Dessine l'écran d'attente de la console (affiché sur la télé du musée) */
 export function dessinerAttente(id, g, w, h, t) {
@@ -594,6 +624,7 @@ const DEMARRAGES = {
       g.fill();
     }
   },
+  ps4: dessinerDemarragePs4,
 };
 /** Sons de démarrage : [fréquence, début, durée, forme, volume] */
 export const SONS_DEMARRAGE = {
@@ -628,6 +659,13 @@ export const SONS_DEMARRAGE = {
     [880, 2.4, 0.06, "sine", 0.05],
     [1318.5, 2.85, 0.25, "sine", 0.05],
     [1760, 2.95, 0.4, "sine", 0.04],
+  ],
+  ps4: [
+    [130.8, 0.5, 2.6, "sine", 0.07],
+    [196, 0.7, 2.4, "sine", 0.05],
+    [392, 1.0, 2.0, "sine", 0.03],
+    [587.3, 1.4, 1.6, "sine", 0.02],
+    [784, 3.3, 0.5, "sine", 0.03],
   ],
 };
 /** Dessine l'image t (en secondes) de la séquence de démarrage */
@@ -702,6 +740,21 @@ const MANETTES = {
     <div class="wii-12">${bouton("KeyQ", "wii-chiffre", "Bouton 1", "1")}${bouton("KeyE", "wii-chiffre", "Bouton 2", "2")}</div>
     <span class="wii-leds"><i class="on"></i><i></i><i></i><i></i></span>
     ${bouton("KeyX", "wii-gachette", "Gâchette B", "B")}</div>`,
+  ps4: () => `<div class="manette manette-ps4" aria-label="Manette sans fil à pavé tactile">
+    ${bouton("KeyQ", "ps4-l", "L1", "L1")}${bouton("KeyE", "ps4-r", "R1", "R1")}
+    <span class="ps4-lumiere"></span>
+    <div class="ps4-corps">
+      <div class="ps4-fleches">${croix("ps4-croix")}</div>
+      ${bouton("KeyP", "ps4-petit ps4-share", "Share", "<small>SHARE</small>")}
+      <span class="ps4-pave"></span>
+      ${bouton("Enter", "ps4-petit ps4-options", "Options", "<small>OPTIONS</small>")}
+      <div class="ps4-actions">
+        ${bouton("KeyQ", "ps4-b ps4-tri", "Triangle", "△")}${bouton("KeyX", "ps4-b ps4-car", "Carré", "□")}${bouton("KeyE", "ps4-b ps4-rond", "Rond", "○")}${bouton("Space", "ps4-b ps4-croixb", "Croix", "✕")}
+      </div>
+      <span class="ps4-stick ps4-stick-g"></span><span class="ps4-stick ps4-stick-d"></span>
+      ${bouton("KeyC", "ps4-home", "Touche PS : accueil")}
+      <span class="ps4-hp"></span>
+    </div></div>`,
 };
 
 /** HTML de la scène : télé (ou console portable) et manette */
@@ -727,7 +780,10 @@ export function habillage(cons) {
     cons.tele === "bois"
       ? `<div class="tele-panneau"><span class="molette"></span><span class="molette petite"></span><span class="canal">3</span><span class="grille"></span></div>`
       : "";
-  const pied = cons.tele === "plat" ? `<span class="tele-pied"></span><span class="barre-capteur"></span>` : "";
+  const pied =
+    cons.tele === "plat"
+      ? `<span class="tele-pied"></span>${cons.id === "wii" ? `<span class="barre-capteur"></span>` : ""}`
+      : "";
   return `<div class="console-tv tele-${cons.tele}">
       ${pied}
       <div class="tele-avant">

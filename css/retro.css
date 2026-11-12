@@ -160,8 +160,7 @@
   flex-direction: column;
   gap: 16px;
   padding: 14px 12px 18px;
-  background:
-    radial-gradient(ellipse at 50% 20%, #3a2d24 0%, #17110d 60%, #0a0807 100%);
+  background: radial-gradient(ellipse at 50% 20%, #3a2d24 0%, #17110d 60%, #0a0807 100%);
 }
 .retro-root.console-theme .retro-touch {
   display: none !important;
@@ -315,8 +314,7 @@
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  background:
-    repeating-conic-gradient(#1b1b1d 0 6deg, #2c2c30 6deg 12deg);
+  background: repeating-conic-gradient(#1b1b1d 0 6deg, #2c2c30 6deg 12deg);
   box-shadow:
     0 3px 6px #0008,
     inset 0 0 0 6px #111;
@@ -326,7 +324,9 @@
   height: 34px;
 }
 .canal {
-  font: 700 14px/1 "Courier New", monospace;
+  font:
+    700 14px/1 "Courier New",
+    monospace;
   color: #47ff7b;
   background: #0d0d0d;
   padding: 4px 9px;
@@ -414,7 +414,9 @@
 }
 .manette small,
 .console-gb small {
-  font: 700 9px/1 system-ui, sans-serif;
+  font:
+    700 9px/1 system-ui,
+    sans-serif;
   letter-spacing: 0.06em;
 }
 .croix {
@@ -591,7 +593,9 @@
   background: radial-gradient(circle at 40% 35%, #3e3e43, #111113);
   box-shadow: 0 3px 0 #000;
   color: #cfcfd4;
-  font: 700 13px system-ui, sans-serif;
+  font:
+    700 13px system-ui,
+    sans-serif;
 }
 .retro-root.console-theme .md-bb {
   margin-top: 10px;
@@ -632,7 +636,9 @@
   border-radius: 10px 10px 3px 3px;
   background: #8b8b92;
   color: #303035;
-  font: 700 10px/22px system-ui, sans-serif;
+  font:
+    700 10px/22px system-ui,
+    sans-serif;
   text-align: center;
 }
 .retro-root.console-theme .ps-l {
@@ -680,7 +686,9 @@
   border-radius: 50%;
   background: radial-gradient(circle at 40% 35%, #4a4a50, #2c2c31);
   box-shadow: 0 2px 0 #1b1b1e;
-  font: 700 17px/1 system-ui, sans-serif;
+  font:
+    700 17px/1 system-ui,
+    sans-serif;
 }
 .retro-root.console-theme .ps-tri {
   top: 0;
@@ -739,6 +747,208 @@
 }
 .ps-stick-d {
   right: 118px;
+}
+
+/* Console de 2013 : écran en haute définition, sans balayage, image sur toute la largeur */
+.retro-root.console-ps4 .tele-plat .console-image canvas:not(.console-boot) {
+  left: 0;
+  width: 100%;
+  image-rendering: auto;
+}
+.console-ps4 .console-tv .console-ecran::after {
+  background: none;
+}
+.console-ps4 .tele-plat {
+  padding: 6px 6px 14px;
+}
+/* Manette sans fil à pavé tactile */
+.manette-ps4 {
+  width: 400px;
+  height: 196px;
+}
+.manette-ps4::before,
+.manette-ps4::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 96px;
+  height: 142px;
+  border-radius: 46% 46% 50% 50% / 30% 30% 60% 60%;
+  background: linear-gradient(#2b2b2f, #151517);
+}
+.manette-ps4::before {
+  left: 6px;
+  transform: rotate(9deg);
+}
+.manette-ps4::after {
+  right: 6px;
+  transform: rotate(-9deg);
+}
+.retro-root.console-theme .ps4-l,
+.retro-root.console-theme .ps4-r {
+  position: absolute;
+  top: 4px;
+  width: 78px;
+  height: 20px;
+  border-radius: 12px 12px 3px 3px;
+  background: #1b1b1e;
+  color: #8d8d95;
+  font:
+    700 9px/20px system-ui,
+    sans-serif;
+  text-align: center;
+}
+.retro-root.console-theme .ps4-l {
+  left: 40px;
+}
+.retro-root.console-theme .ps4-r {
+  right: 40px;
+}
+.ps4-lumiere {
+  position: absolute;
+  left: 50%;
+  top: 12px;
+  width: 92px;
+  height: 9px;
+  transform: translateX(-50%);
+  border-radius: 5px 5px 0 0;
+  background: linear-gradient(#8fd0ff, #2f8cff);
+  box-shadow: 0 0 14px 2px #3a9bffaa;
+}
+.ps4-corps {
+  position: absolute;
+  inset: 20px 0 62px;
+  z-index: 1;
+  border-radius: 62px 62px 44px 44px;
+  background: linear-gradient(#303034, #1c1c1f);
+}
+.ps4-fleches {
+  position: absolute;
+  left: 34px;
+  top: 14px;
+}
+.ps4-croix {
+  --t: 78px;
+  --croix: #0d0d0f;
+}
+.ps4-croix .c-centre {
+  background: transparent;
+}
+.retro-root.console-theme .ps4-croix button {
+  margin: 2px;
+  border-radius: 5px;
+}
+.ps4-pave {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 124px;
+  height: 62px;
+  transform: translateX(-50%);
+  border-radius: 4px 4px 12px 12px;
+  background: linear-gradient(#141416, #0b0b0d);
+  box-shadow: inset 0 0 0 1px #3a3a40;
+}
+.retro-root.console-theme .ps4-petit {
+  position: absolute;
+  top: 8px;
+  width: 9px;
+  height: 18px;
+  border-radius: 5px;
+  background: #0d0d0f;
+  box-shadow: 0 0 0 1px #3a3a40;
+}
+.retro-root.console-theme .ps4-share {
+  left: 122px;
+}
+.retro-root.console-theme .ps4-options {
+  right: 122px;
+}
+.ps4-petit small {
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #77777f;
+  font-size: 6px;
+}
+.ps4-actions {
+  position: absolute;
+  right: 28px;
+  top: 8px;
+  width: 96px;
+  height: 96px;
+}
+.retro-root.console-theme .ps4-b {
+  position: absolute;
+  width: 31px;
+  height: 31px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #2e2e33, #0c0c0e);
+  box-shadow: 0 2px 0 #050506;
+  font:
+    700 16px/1 system-ui,
+    sans-serif;
+}
+.retro-root.console-theme .ps4-tri {
+  top: 0;
+  left: 32px;
+  color: #3cc47c;
+}
+.retro-root.console-theme .ps4-car {
+  top: 32px;
+  left: 0;
+  color: #f07ab8;
+}
+.retro-root.console-theme .ps4-rond {
+  top: 32px;
+  left: 65px;
+  color: #ee4a3e;
+}
+.retro-root.console-theme .ps4-croixb {
+  top: 65px;
+  left: 32px;
+  color: #74a6f7;
+}
+.ps4-stick {
+  position: absolute;
+  bottom: -30px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 45% 40%, #36363b, #0a0a0c);
+  box-shadow:
+    0 0 0 6px #111113,
+    0 0 0 7px #3a3a40;
+}
+.ps4-stick-g {
+  left: 116px;
+}
+.ps4-stick-d {
+  right: 116px;
+}
+.retro-root.console-theme .ps4-home {
+  position: absolute;
+  left: 50%;
+  bottom: -18px;
+  width: 20px;
+  height: 20px;
+  margin-left: -10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #3a3a40, #0c0c0e);
+  box-shadow: 0 0 0 1px #4a4a52;
+}
+.ps4-hp {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  width: 26px;
+  height: 5px;
+  transform: translateX(-50%);
+  border-radius: 3px;
+  background: repeating-linear-gradient(90deg, #0a0a0c 0 2px, #2c2c31 2px 4px);
 }
 
 /* Manette à trois poignées */
@@ -873,7 +1083,9 @@
   place-items: center;
   border-radius: 50%;
   color: #e8eeff;
-  font: 700 12px system-ui, sans-serif;
+  font:
+    700 12px system-ui,
+    sans-serif;
 }
 .retro-root.console-theme .n64-b {
   top: 26px;
@@ -923,7 +1135,9 @@
     0 0 0 4px #e9e9ec,
     0 3px 0 6px #c7c7cc;
   color: #8d8d95;
-  font: 700 16px system-ui, sans-serif;
+  font:
+    700 16px system-ui,
+    sans-serif;
 }
 .wii-milieu,
 .wii-12 {
@@ -938,7 +1152,9 @@
   border-radius: 50%;
   background: #dcdce1;
   color: #6c6c74;
-  font: 700 14px/1 system-ui, sans-serif;
+  font:
+    700 14px/1 system-ui,
+    sans-serif;
 }
 .retro-root.console-theme .wii-petit {
   width: 22px;
@@ -979,7 +1195,9 @@
   border-radius: 0 0 14px 14px;
   background: #e2e2e6;
   color: #7a7a82;
-  font: 700 10px/18px system-ui, sans-serif;
+  font:
+    700 10px/18px system-ui,
+    sans-serif;
   text-align: center;
 }
 
@@ -1003,7 +1221,9 @@
   padding: 0 0 2.5%;
   margin-bottom: 5%;
   border-bottom: 2px solid #a6a49f;
-  font: 700 9px/1 system-ui, sans-serif;
+  font:
+    700 9px/1 system-ui,
+    sans-serif;
   color: #8a8882;
 }
 .gb-cadre {
@@ -1055,7 +1275,9 @@
 }
 .gb-nom {
   margin: 4% 0 0;
-  font: italic 800 13px/1 system-ui, sans-serif;
+  font:
+    italic 800 13px/1 system-ui,
+    sans-serif;
   letter-spacing: 0.04em;
 }
 .gb-commandes {

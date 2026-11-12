@@ -171,6 +171,15 @@ export const RETRO = [
     "← → : viser · ↑ ↓ : effet · maintenir puis relâcher Espace : lancer",
     "Dix frames, quilles, gouttières, strikes, spares et score réglementaire.",
   ],
+  [
+    "ps4",
+    "PlayStation 4 · menu d’accueil",
+    2013,
+    "ps4",
+    "MenuPS4",
+    "Flèches : se déplacer · Espace (✕) : valider · E (○) : retour · C (PS) : accueil",
+    "Barre de fonctions, rangée de contenus et quatre jeux du musée à lancer.",
+  ],
 ].map(([id, title, year, module, engine, controls, description]) => ({
   id,
   title,

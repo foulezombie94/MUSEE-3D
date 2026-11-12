@@ -1,6 +1,6 @@
 # CONTINUE? — Musée 3D du jeu vidéo
 
-Un musée jouable en HTML, CSS et JavaScript : quatre salles, vingt-deux tableaux, quatre bornes d’arcade, dix-neuf reconstitutions de jeux et un monde Minecraft indépendant.
+Un musée jouable en HTML, CSS et JavaScript : quatre salles, vingt-deux tableaux, quatre bornes d’arcade, dix-neuf reconstitutions de jeux, une PlayStation 4 avec son menu d’accueil et un monde Minecraft indépendant.
 
 ## Ouvrir le musée
 
@@ -32,6 +32,7 @@ Les modules JavaScript nécessitent un serveur HTTP : ouvrir directement les fic
 
 - Musée : ZQSD / WASD ou flèches pour marcher ; souris pour regarder ; clic ou E devant un tableau pour jouer.
 - Reconstitutions : les commandes sont indiquées sous chaque jeu ; P met en pause et Échap revient au musée.
+- PlayStation 4 (mur du fond de la salle 4) : flèches pour parcourir le menu, Espace (✕) pour valider, E (○) pour revenir, C (touche PS) pour retrouver l’accueil. Les tuiles lancent Labyrinthe, Raquettes, Serpent et Briques.
 - Minecraft : Espace pour sauter, clic pour miner, clic droit pour poser et E pour l’inventaire. Le monde est sauvegardé dans le navigateur.
 - Le profil graphique **PC faible** est proposé par défaut. Les performances réelles dépendent du matériel et du navigateur.
 
